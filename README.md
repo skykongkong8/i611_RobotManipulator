@@ -15,7 +15,7 @@ In addition, this directory includes matrix calculator with characters, which ca
 
 ### non_python_materials
 Here I tried to visualize the results made from mechanical_analysis directory. However since the matrix was too complex, I chosed to leave the files like this instead.    
-![ex_screenshot](./non_python_materials/homogeneous_transformation_matrix_img2.jpg)    
+![ex_screenshot](./non_python_materials/homogeneous_transformation_matrix_img.png)    
 
 ### teleoperation
 This is just for test. This code might not work.
