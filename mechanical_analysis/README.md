@@ -50,7 +50,7 @@ psuedo_inv_jacobian = jacobian.T*((jacobian * jacobian.T)**-1)
 ```
 ### 7. Calculate Endpoint Compliance with Servo Stiffness matrix
 ```python
-#Servo Stiffness
+# Servo Stiffness
 K = Matrix([
     [1,0,0,0,0,0],
     [0,1,0,0,0,0],
@@ -65,9 +65,10 @@ Compliance = psuedo_inv_jacobian * (K**-1) * (psuedo_inv_jacobian.T)
 
 ### 8. Obtain eigen values and eigen vectors via optimization problem
 ```python
-# Typically, we use squared compliance to obtain eigen values but here, we have abstracted functions
+# Typically, we use determinant of subtraction between squared compliance and identical matrix multiplied by lambda to obtain eigen values but here, we have abstracted functions
 squared_compliance = Compliance * Compliance
 
+# Eigen vectors represent the directions of each force when it is maximized or minimized
 eigenvalues = squared_compliance.eigenvals()
 eigenvectors = squared_compliance.eigenvects()
 ```
