@@ -24,7 +24,7 @@ Homogeneous_Transformation_Matrix=[
     [(sin(c))*(cos(d)) + (-cos(c))*(sin(d))*(cos(e))*(cos(f)) + (sin(c))*(sin(d)) + (-cos(c))*(-cos(d))*(-1)*(sin(f)), (sin(c))*(cos(d)) + (-cos(c))*(sin(d))*(-sin(e)), (sin(c))*(cos(d)) + (-cos(c))*(sin(d))*(cos(e))*(sin(f)) + (sin(c))*(sin(d)) + (-cos(c))*(-cos(d))*(-1)*(-cos(f)), (sin(c))*(cos(d)) + (-cos(c))*(sin(d))*(-sin(e))*(z) + (sin(c))*(sin(d)) + (-cos(c))*(-cos(d))*(y) + (l)*(sin(c)) + (v) + (u)],
     [0,0,0,1]]
 ```
-
+for more information like this, please check [here](https://github.com/skykongkong8/i611_RobotManipulator/tree/master/mechanical_analysis)
 
 ### teleoperation
 This is just for test. This code might not work.
