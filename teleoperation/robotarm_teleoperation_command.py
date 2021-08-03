@@ -1,13 +1,16 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from i611_MCS import *
 from i611_extend import *
 from constant_variables import *
 import sys
 
 class RobotArmTeleoperation_Command():
-    def __init__(self, cur_pos):
+    def __init__(self, cur_pos, rb):
         self.cur_pos = cur_pos
         self.pst_pos = None
-        self.rb = i611Robot()
+        self.rb = rb
 
         self.offset_amount = OFFSET_AMOUNT
         self.msg = """
@@ -17,16 +20,6 @@ class RobotArmTeleoperation_Command():
         WARNING : BEWARE OF ENDPOINT ORIENTATION!
         WARNING : REMIND THAT THIS CONTROL SUPPORTS 6 DIRECTIONS, NOT 6 DOF!
 
-        ---------------------------
-        Moving around x-y plane:
-            w
-        a    s    d
-            x
-        
-        Moving around z-axis:
-
-        h (high)   l (low)
-        
         CTRL-C to quit\n
         """
 

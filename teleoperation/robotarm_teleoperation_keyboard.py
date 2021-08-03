@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from i611_MCS import *
 from i611_extend import *
 from constant_variables import *
@@ -16,10 +19,10 @@ class RobotArmTeleoperation_Keyboard():
     #Get keyboard input, Return new, and compatible position#
     #########################################################
 
-    def __init__(self, cur_pos):
+    def __init__(self, cur_pos,rb):
         self.cur_pos = cur_pos
         self.pst_pos = None
-        self.rb = i611Robot()
+        self.rb = rb
 
         self.offset_amount = OFFSET_AMOUNT
         self.msg = """
@@ -29,15 +32,18 @@ class RobotArmTeleoperation_Keyboard():
         WARNING : BEWARE OF ENDPOINT ORIENTATION!
         WARNING : REMIND THAT THIS CONTROL SUPPORTS 6 DIRECTIONS, NOT 6 DOF!
 
-        ---------------------------
-        Moving around x-y plane:
-            w
-        a    s    d
-            x
-        
-        Moving around z-axis:
-
-        h (high)   l (low)
+       _____________________________
+       | Moving around x-y plane:  |
+       |     w                     |
+       | a   s   d                 |
+       |     x                     |
+       |                           |
+       | Moving around z-axis:     |
+       |                           |
+       | h (high)   l (low)        |
+       |                           |
+       | u (undo)                  |
+       |___________________________|
         
         CTRL-C to quit\n
         """
@@ -68,7 +74,7 @@ class RobotArmTeleoperation_Keyboard():
 
     def ready_for_keyboard_input(self):
         """Get keyboard input"""
-        key_list = ['w', 'a', 's', 'd', 'x', 'h', 'l']
+        key_list = ['w', 'a', 's', 'd', 'x', 'h', 'l', 'u']
         print("Waiting for keyboard input...")
         while True:
             key = self.getKey()
@@ -79,7 +85,7 @@ class RobotArmTeleoperation_Keyboard():
     def make_new_position(self, key):
         """Formulate new position with keyboard input"""
         position = self.cur_pos
-        self.pst_pos = self.cur_pos
+        
         try:
             if key == 'w':
                 position.shift(dy = self.offset_amount)
@@ -93,17 +99,26 @@ class RobotArmTeleoperation_Keyboard():
             elif key == 'x':
                 position.shift(dy = -self.offset_amount)
 
+            elif key == 's':
+                # BEWARE OF S : THIS INITIALIZES THE POSITION VALUE
+                position = self.rb.home()
+
             elif key == 'h':
                 position.shift(dz = self.offset_amount)
 
             elif key == 'l':
                 position.shift(dz = -self.offset_amount)
             
+            elif key == 'u':
+                if self.pst_pos:
+                    position = self.pst_pos
+                else:
+                    print('There is no past position!')
         except:
             print("Unknown Error : set to past position")
             return self.pst_pos
-        
-        return position
+        finally:
+            return position
     
     def check_position(self, position):
         """If joint configuration exists, such configuration is compatible"""
