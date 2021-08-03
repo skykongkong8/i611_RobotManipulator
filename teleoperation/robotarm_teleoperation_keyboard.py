@@ -5,7 +5,7 @@ import sys
 import os
 if os.name == 'nt':
     import msvcrt
-else:
+else:  
     import tty
     import termios
 
