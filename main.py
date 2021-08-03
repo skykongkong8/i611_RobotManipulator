@@ -101,12 +101,15 @@ if __name__ == '__main__':
     try:
 
         if len(argument) == 1:
+            # python main.py
             print("Set to code_control")
             # move_with_code(rb)
-        elif len(argument) == 2:
-            if argument[1] == '-keyboard':                
+        elif len(argument) >= 2:
+            if argument[1] == '-keyboard':
+                # python main.py -keyboard             
                 move_with_keyboard(cur_pos, rb)
             elif argument[1] == '-command':
+                # python main.py -command -(offset_amount)
                 move_with_command(cur_pos, rb)
             else:
                 print('Invalid argument input! Set to Default : move_with_keyboard')

@@ -26,3 +26,14 @@ class RobotArmTeleoperation_Command():
         self.e = """
         Communications Failed\n
         """
+
+    def set_offset_amount(self):
+        argument = sys.argv
+        if len(argument) <= 2:
+            pass
+        elif len(argument) == 3:
+            if type(argument[2]) == int or type(argument[2]) ==float:
+                self.offset_amount = argument[2]
+        print("offset amount set to {}". format(self.offset_amount))
+        
+
