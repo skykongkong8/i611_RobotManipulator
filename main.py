@@ -54,10 +54,13 @@ def move_with_keyboard(cur_pos, rb):
             key = key_teleop.ready_for_keyboard_input()
             pos_candidate = key_teleop.make_new_position(key)
             new_pos = key_teleop.return_position(pos_candidate)
+
+            #Check  path
             rb.move(new_pos)
             # rb.line(key_teleop.cur_pos, new_pos)
             # rb.optline(key_teleop.cur_pos, new_pos)
 
+            # Position Update
             key_teleop.pst_pos = key_teleop.cur_pos
             key_teleop.cur_pos = new_pos
         except KeyboardInterrupt:
@@ -66,11 +69,19 @@ def move_with_keyboard(cur_pos, rb):
             print(key_teleop.e)
 
 def move_with_command(cur_pos, rb):
-    cmd_teleop = RobotArmTeleoperation_Command(cur_pos, rb)
+    cmd_teleop = RobotArmTeleoperation_Command(cur_pos, rb, sys.argv[2])
     print(cmd_teleop.msg)
     while True:
         try:
-            pass
+            cmd_teleop.set_offset_amount()
+            pos_candidate = cmd_teleop.make_new_position()
+            new_pos = cmd_teleop.return_position(pos_candidate)
+
+            rb.move(new_pos)
+
+            # Position Update
+            cmd_teleop.pst_pos = cmd_teleop.cur_pos
+            cmd_teleop.cur_pos = new_pos
         except:
             print(cmd_teleop.e)
 
@@ -109,8 +120,9 @@ if __name__ == '__main__':
                 # python main.py -keyboard             
                 move_with_keyboard(cur_pos, rb)
             elif argument[1] == '-command':
-                # python main.py -command -(offset_amount)
-                move_with_command(cur_pos, rb)
+                # python main.py -command -(direction) -(offset_amount)
+                if len(argument) >= 3:
+                    move_with_command(cur_pos, rb)
             else:
                 print('Invalid argument input! Set to Default : move_with_keyboard')
                 move_with_keyboard(cur_pos, rb)
