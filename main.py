@@ -131,6 +131,7 @@ if __name__ == '__main__':
         pass
 
     finally:
+        print("Program Shutdown! Goodbye.")
         terminator(rb)
 
 

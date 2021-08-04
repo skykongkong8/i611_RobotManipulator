@@ -27,4 +27,40 @@ Homogeneous_Transformation_Matrix=[
 for more information like this, please check [here](https://github.com/skykongkong8/i611_RobotManipulator/tree/master/mechanical_analysis)
 
 ### teleoperation
-This is just for test. This code might not work.
+*This is just for test for now. Some codes might not work.*
+#### robotarm_teleoperation_keyboard
+* By Telnet connection (Tera Term recommended), after sending all the files via FFFTP, run:
+```python
+python main.py -keyboard
+```
+* keyboard operation
+```command
+_____________________________
+| Moving around x-y plane:  |
+|     w                     |
+| a   s   d                 |
+|     x                     |
+|                           |
+| Moving around z-axis:     |
+|                           |
+| h (high)   l (low)        |
+|                           |
+| u (undo)                  |
+|___________________________|
+```
+#### robotarm_teleoperation_command
+* By Telnet connection (Tera Term recommended), after sending all the files via FFFTP, run:
+```python
+python main.py -command (your_command)
+```
+* Command Examples:
+```command
+[axis control]
+    +x -x
+    +y -y
+    +z -z
+
+[additional control]
+    -home
+    -undo
+```
