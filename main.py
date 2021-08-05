@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from teleoperation.robotarm_teleoperation_command import RobotArmTeleoperation_Command
-from teleoperation.robotarm_teleoperation_keyboard import RobotArmTeleoperation_Keyboard
+from teleoperation.robotarm_teleoperation_keyboard_RPY import RobotArmTeleoperation_Keyboard
+from teleoperation.robotarm_teleoperation_keyboard_JNT import RobotJointTeleoperation_Keyboard
 from i611_MCS import *
 from i611_extend import *
 from i611_io import *
@@ -46,11 +47,11 @@ def move_with_code(rb):
 
     # rb.close()
 
-def move_with_keyboard(cur_pos, rb):
+def move_with_keyboard_RPY(cur_pos, rb):
     key_teleop = RobotArmTeleoperation_Keyboard(cur_pos, rb)
     print(key_teleop.msg)
     while True:
-        print("Waiting for keyboard input...")
+        print("Waiting for keyboard input...\n")
         try:
             key = key_teleop.ready_for_keyboard_input()
             pos_candidate = key_teleop.make_new_position(key)
@@ -65,11 +66,17 @@ def move_with_keyboard(cur_pos, rb):
             key_teleop.pst_pos = key_teleop.cur_pos
             key_teleop.cur_pos = new_pos
         except KeyboardInterrupt:
-            print("keyboard interrupt abort!")
+            print("keyboard interrupt abort!\n")
             break
         except:
             print(key_teleop.e)
             break
+        
+def move_with_keyboard_JNT(cur_jnt, rb):
+    key_teleop = RobotJointTeleoperation_Keyboard(cur_jnt, rb)
+    print(key_teleop.msg)
+    while True:
+        print("Waiting for keyboard input...\n")
 
 def move_with_command(cur_pos, rb):
     cmd_teleop = RobotArmTeleoperation_Command(cur_pos, rb, sys.argv[2])
@@ -99,7 +106,7 @@ def get_initialized_pos(rb):
 def terminator(rb):
     flag = rb.home()
     if not flag:
-        print('Error : manipulator failed to come back home position!')
+        print('Error : manipulator failed to come back home position!\n')
     rb.close()
 
 # def emergency_stop_everything(rb):
@@ -116,25 +123,25 @@ if __name__ == '__main__':
 
         if len(argument) == 1:
             # python main.py
-            print("Set to code_control")
+            print("Set to code_control\n")
             # move_with_code(rb)
         elif len(argument) >= 2:
             if argument[1] == '-keyboard':
                 # python main.py -keyboard             
-                move_with_keyboard(cur_pos, rb)
+                move_with_keyboard_RPY(cur_pos, rb)
             elif argument[1] == '-command':
                 # python main.py -command -(direction) -(offset_amount)
                 if len(argument) >= 3:
                     move_with_command(cur_pos, rb)
             else:
-                print('Invalid argument input! Set to Default : move_with_keyboard')
+                print('Invalid argument input! Set to Default : move_with_keyboard\n')
                 move_with_keyboard(cur_pos, rb)
 
     except:
         pass
 
     finally:
-        print("Program Shutdown! Goodbye.")
+        print("Program Shutdown! Goodbye.\n")
         terminator(rb)
 
 

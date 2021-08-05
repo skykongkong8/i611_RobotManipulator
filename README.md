@@ -18,7 +18,7 @@ Here I tried to visualize the results made from mechanical_analysis directory. H
 Please click the image below or check this matrix. 
 ![ex_screenshot](./non_python_materials/homogeneous_transformation_matrix_img.png)   
 ```python
-[((-sin(a)*cos(b) - sin(b)*cos(a))*sin(e) + (-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*sin(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d))*cos(e))*cos(f) + (-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) - (-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c))*sin(f)
+homogeneous_transformation_matrix = [((-sin(a)*cos(b) - sin(b)*cos(a))*sin(e) + (-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*sin(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d))*cos(e))*cos(f) + (-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) - (-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c))*sin(f)
   ,(-sin(a)*cos(b) - sin(b)*cos(a))*cos(e) - (-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*sin(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d))*sin(e)
   ,((-sin(a)*cos(b) - sin(b)*cos(a))*sin(e) + (-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*sin(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d))*cos(e))*sin(f) - (-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) - (-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c))*cos(f)
   ,-l*sin(a)*sin(b) + l*cos(a)*cos(b) + w*(-sin(a)*cos(b) - sin(b)*cos(a)) + x*(-sin(a)*cos(b) - sin(b)*cos(a)) + y*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c)) + z*((-sin(a)*cos(b) - sin(b)*cos(a))*cos(e) - (-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*sin(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d))*sin(e))]
@@ -36,10 +36,10 @@ for more information like this, please check [here](https://github.com/skykongko
 
 ### teleoperation
 *This is just for test for now. Some codes might not work.*
-#### robotarm_teleoperation_keyboard
+#### robotarm_teleoperation_keyboard_RPY
 * By Telnet connection (Tera Term recommended), after sending all the files via FFFTP, run:
 ```python
-python main.py -keyboard
+python main.py -keyboard_RPY
 ```
 * keyboard operation
 ```command
@@ -55,6 +55,25 @@ _____________________________
 |                           |
 | u (undo)                  |
 |___________________________|
+```
+#### robotarm_teleoperation_keyboard_JNT
+* By Telnet connection (Tera Term recommended), after sending all the files via FFFTP, run:
+```python
+python main.py -keyboard_JNT
+```
+* keyboard operation
+```command
+_________________________________
+|    Joint Control:             |
+|        w                      |
+|    a   s   d                  |
+|        d                      |
+|                               |
+|   Chmod:                      |
+|    u   : Joint 1 & Joint 2    |
+|    j   : Joint 3 & Joint 4    |
+|    m   : Joint 5 & Joint 6    |
+|_______________________________|
 ```
 #### robotarm_teleoperation_command
 * By Telnet connection (Tera Term recommended), after sending all the files via FFFTP, run:
