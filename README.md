@@ -11,6 +11,7 @@ This interface might not give you as sophisticated control as the original libra
 ## Structure (Temporary)
 ### mechanical_analysis
 Here I tried to set mechanical model and solve the equation with Denavit-Hartenberg Kinematic Parameters and Homogenous Transformation Matrix with euler angles. (Basically Robot Forward Kinematics)   
+You can perform coordinate transformation for every joint.    
 In addition, this directory includes matrix calculator with characters, which can be utilized in versatile purposes.    
 
 ### non_python_materials
@@ -33,11 +34,12 @@ homogeneous_transformation_matrix = [
   ,u + v + y*(-sin(c)*sin(d) + cos(c)*cos(d)) - z*(-sin(c)*cos(d) - sin(d)*cos(c))*sin(e)]
  ,[0, 0, 0, 1]]
 ```
-for more information like this, please check [here](https://github.com/skykongkong8/i611_RobotManipulator/tree/master/mechanical_analysis)
+for more detailed information like this, please check [here](https://github.com/skykongkong8/i611_RobotManipulator/tree/master/mechanical_analysis)
 
 ### teleoperation
 *This is just for test for now. Some codes might not work.*
 #### robotarm_teleoperation_keyboard_RPY
+> Please remind that there are can be such configurations that does not support your input coordinate.
 * By Telnet connection (Tera Term recommended), after sending all the files via FFFTP, run:
 ```python
 python main.py -keyboard_RPY
@@ -57,7 +59,8 @@ _____________________________
 | u (undo)                  |
 |___________________________|
 ```
-#### robotarm_teleoperation_keyboard_JNT
+#### robotarm_teleoperation_keyboard_JNT [THIS CODE WORKS!]
+> This interface is IDENTICAL to JOG operation, thereby has ZERO singular point issues.
 * By Telnet connection (Tera Term recommended), after sending all the files via FFFTP, run:
 ```python
 python main.py -keyboard_JNT
