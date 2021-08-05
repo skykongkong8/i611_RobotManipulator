@@ -66,10 +66,11 @@ DH_params = [
 homogeneous_matricies = []
 for i in range(6):
     dh = DH_params[i]
-    homogeneous_matricies.append([[cos(dh[2]), -sin(dh[2])*cos(dh[1]), sin(dh[2])*sin(dh[1]), dh[0]*cos(dh[2])],
-    [sin(dh[2]), cos(dh[2])*cos(dh[1]), -cos(dh[2])*sin(dh[1]), dh[0]*sin(dh[2])],
-    [0, sin(dh[1]), cos(dh[1]), dh[3]],
-    [0,0,0,1]])
+    homogeneous_matricies.append([
+        [cos(dh[2]), -sin(dh[2])*cos(dh[1]), sin(dh[2])*sin(dh[1]), dh[0]*cos(dh[2])],
+        [sin(dh[2]), cos(dh[2])*cos(dh[1]), -cos(dh[2])*sin(dh[1]), dh[0]*sin(dh[2])],
+        [0, sin(dh[1]), cos(dh[1]), dh[3]],
+        [0,0,0,1]])
 
 # print(homogeneous_matricies)
 
@@ -97,7 +98,7 @@ Orientation = [
 for i in range(len(result)-1):
     for j in range(len(result[0])-1):
         Orientation[j][i] = result[j][i]
-print(Orientation)
+# print(Orientation)
 
 # Orientation = [[-sqrt(3)/8 - 3/16, -7/8, 3/8 - sqrt(3)/16]
 #  , [-3/8 + 5*sqrt(3)/16, sqrt(3)/8, 5/16 + 3*sqrt(3)/8]
@@ -107,12 +108,60 @@ Position = [0,0,0]
 for i in range(len(result)-1):
     Position[i] = result[i][-1]
 # Position = [-1209*sqrt(3)/16 - 20.78125, 825*sqrt(3)/32 + 229.6875, 67*sqrt(3)/8 + 550.25]
-# if __name__ == '__main__':
-#     print(f'x : {Position[0]}\n', f'y : {Position[1]}\n', f'z : {Position[2]}\n')
 
-#x = -169.3140183434757
-#y = 629.3228202874282
-#z = 358.14582562299427
+if __name__ == '__main__':                                    
+    flag_list = [True, True, True]
+    pos_list=[]
+    for i in range(3):
+        if Position[i] < 0:
+            flag_list[i] = False
+        pos_list.append((Position[i])**2)
+    from math import sqrt
+    for i in range(3):
+        if flag_list[i]:
+            print(sqrt(pos_list[i]))
+        else:
+            print(-sqrt(pos_list[i]))
+
+# all 60
+# -503.76029715641096
+# -2.4615704891007937
+# 533.75
+"""???
+-631
+218
+278
+"""
+# all 45
+# -450.9619
+# 490
+# 325.9619
+
+# all 30
+#x = -296.8140183434757
+#y = 408.48634232239635
+#z = 613.1458256229943
+"""???
+-169
+629
+358
+"""
+
+# all 60
+# 594.33199999999
+# -229.051999999999
+# 239.494
+
+# all 45
+# 491.596
+# -345.5860000
+# 459.361196089336701
+
+# all 30
+# 332.5090000000
+# -352.8620000000000
+# 665.053
+
 
 Jacobian =[
     [-l*sin(a)*cos(b) - l*sin(b)*cos(a) + w*(sin(a)*sin(b) - cos(a)*cos(b)) + x*(sin(a)*sin(b) - cos(a)*cos(b)) + y*((-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*cos(d) + (-sin(a)*cos(b) - sin(b)*cos(a))*sin(d)*cos(c)) + z*((sin(a)*sin(b) - cos(a)*cos(b))*cos(e) + (-(-sin(a)*cos(b) - sin(b)*cos(a))*cos(c)*cos(d) - (sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d))*sin(e)), -l*sin(a)*cos(b) - l*sin(b)*cos(a) + w*(sin(a)*sin(b) - cos(a)*cos(b)) + x*(sin(a)*sin(b) - cos(a)*cos(b)) + y*((-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*cos(d) + (-sin(a)*cos(b) - sin(b)*cos(a))*sin(d)*cos(c)) + z*((sin(a)*sin(b) - cos(a)*cos(b))*cos(e) + (-(-sin(a)*cos(b) - sin(b)*cos(a))*cos(c)*cos(d) - (sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d))*sin(e)), y*(-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*sin(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d)) + z*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(d)*cos(c))*sin(e), y*(-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*sin(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d)) + z*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*cos(d))*sin(e), z*(-(-sin(a)*cos(b) - sin(b)*cos(a))*sin(e) + (-(-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d))*cos(e)), 0], 
@@ -156,3 +205,16 @@ psuedo_inverse_matrix = Matrix([
 Compare p1 values with Orientation/Position from above. 
 Especially use Euler transformation matrix or Roll-Pitch-Yaw matrix to clearly confirm rz, ry, rx
 """
+
+home = (100,0,870.3079999)
+ee_rel = (0,0,-90)
+
+# all 60
+# 594.33199999999
+# -229.051999999999
+# 239.494
+
+# all 30
+# 332.5090000000
+# -352.8620000000000
+# 665.053
