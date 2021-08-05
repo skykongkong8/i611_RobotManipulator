@@ -74,6 +74,10 @@ _________________________________
 |    j   : Joint 3 & Joint 4    |
 |    m   : Joint 5 & Joint 6    |
 |_______________________________|
+
+w/x : J2,J4,J6 ccw/cw
+        
+a/d : J1,J3,J5 ccw/cw
 ```
 #### robotarm_teleoperation_command
 * By Telnet connection (Tera Term recommended), after sending all the files via FFFTP, run:

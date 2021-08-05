@@ -39,13 +39,18 @@ class RobotJointTeleoperation_Keyboard():
         |    Joint Control:             |
         |        w                      |
         |    a   s   d                  |
-        |        d                      |
+        |        x                      |
         |                               |
         |   Chmod:                      |
         |    u   : Joint 1 & Joint 2    |
         |    j   : Joint 3 & Joint 4    |
         |    m   : Joint 5 & Joint 6    |
         |_______________________________|
+        
+        w/x : J2,J4,J6 ccw/cw
+        
+        a/d : J1,J3,J5 ccw/cw
+        
         CTRL-C to quit\n
         """
 

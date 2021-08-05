@@ -71,12 +71,24 @@ def move_with_keyboard_RPY(cur_pos, rb):
         except:
             print(key_teleop.e)
             break
-        
+
 def move_with_keyboard_JNT(cur_jnt, rb):
     key_teleop = RobotJointTeleoperation_Keyboard(cur_jnt, rb)
     print(key_teleop.msg)
     while True:
         print("Waiting for keyboard input...\n")
+        try:
+            key = key_teleop.ready_for_keyboard_input()
+            new_jnt = key_teleop.make_new_joint(key)
+
+            rb.move(new_jnt)
+            key_teleop.cur_jnt = new_jnt
+        except KeyboardInterrupt:
+            print('KeyboardInterrupt abort!\n')
+            break
+        except:
+            print(key_teleop.e)
+            break
 
 def move_with_command(cur_pos, rb):
     cmd_teleop = RobotArmTeleoperation_Command(cur_pos, rb, sys.argv[2])
@@ -126,16 +138,20 @@ if __name__ == '__main__':
             print("Set to code_control\n")
             # move_with_code(rb)
         elif len(argument) >= 2:
-            if argument[1] == '-keyboard':
-                # python main.py -keyboard             
+            if argument[1] == '-keyboard_RPY':
+                # python main.py -RPY             
                 move_with_keyboard_RPY(cur_pos, rb)
+            
+            elif argument[1] == '-keyboard_JNT':
+                move_with_keyboard_JNT(cur_jnt, rb)
+
             elif argument[1] == '-command':
                 # python main.py -command -(direction) -(offset_amount)
                 if len(argument) >= 3:
                     move_with_command(cur_pos, rb)
             else:
-                print('Invalid argument input! Set to Default : move_with_keyboard\n')
-                move_with_keyboard(cur_pos, rb)
+                print('Invalid argument input! Set to Default : move_with_keyboard_JNT\n')
+                move_with_keyboard_JNT(cur_pos, rb)
 
     except:
         pass
