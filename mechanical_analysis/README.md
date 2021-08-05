@@ -6,6 +6,7 @@
 ### 2. Obtain Denavit-Hartenberg Kinematic Parameters
 ### 3. Formulate homogeneous transformation matrix with euler angle for each links
 [Step 1,2,3 had done like here](https://github.com/skykongkong8/i611_RobotManipulator/blob/master/non_python_materials/analysis_trial.pdf)
+Or you can just check robot_kinematics.py
 ```python
 Changed_Like = {
    theta_1 : a,
