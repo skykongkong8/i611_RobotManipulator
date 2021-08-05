@@ -6,6 +6,7 @@ from i611_extend import *
 from constant_variables import *
 import sys
 import os
+import select
 if os.name == 'nt':
     import msvcrt
 else:  
@@ -75,7 +76,7 @@ class RobotArmTeleoperation_Keyboard():
     def ready_for_keyboard_input(self):
         """Get keyboard input"""
         key_list = ['w', 'a', 's', 'd', 'x', 'h', 'l', 'u']
-        print("Waiting for keyboard input...")
+        
         while True:
             key = self.getKey()
             if key in key_list:

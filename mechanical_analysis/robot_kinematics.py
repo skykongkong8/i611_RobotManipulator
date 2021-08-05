@@ -3,200 +3,13 @@
 #i611 Robot Kinmatics Analysis with Python#
 ###########################################
 
-from sympy import sin, cos, symbols, diff, Matrix
+from sympy import sin, cos, symbols, diff, Matrix, pi
 from sympy.abc import a,b,c,d,e,f,u,v,w,x,y,z,l
 import numpy as np
 
 """Step#1 Assign Link Frames"""
+
 """Step#2 Obtain Denavit Hartenberg Kinematic Parameters"""
-"""Step#3 Compute homogeneous transformation matrix with euler angles"""
-"""Step#4 Calculate homogeneous transformation matrix from GND to End-Effector"""
-
-result_4 = [['', '', '', ''],
-        ['', '', '', ''],
-        ['', '', '', ''],
-        ['','','','']]
-result_3 = [['','',''],
-        ['','',''],
-        ['','','']]
-
-def matrix_with_variables_calculator(A,B, result):
-    flag = False
-    for i in range(len(A)): 
-        for j in range(len(B[0])):  
-            for k in range(len(B)):
-                try:
-                    if (A[i][k] != '0' and B[k][j] != '0'):
-                        if result[i][j] == '1':
-                            result[i][j] = (A[i][k] + B[k][j])
-                            result[i][j] += ' + '
-                        elif A[i][k] == '1':
-                            result[i][j] += B[k][j]
-                            result[i][j] += ' + '
-                        elif B[k][j] == '1':
-                            result[i][j] += A[i][k]
-                            result[i][j] += ' + '
-                        else:
-                            result[i][j] += (A[i][k] + B[k][j])
-                            result[i][j] += ' + '
-                    
-                    else:
-                        pass
-                except:
-                    flag = True
-                    print('\nERROR : INVALID MATRIX! BUT RESULT MAYBE STILL NOTEWORTHY!')
-                if flag:
-                    break
-            if flag:
-                break
-        if flag:
-            break
-    return result
-
-            
-def matrix_prettier(matrix):
-    for i in range(len(matrix)):
-        for j in range(len(matrix[0])):
-            if matrix[i][j] == '':
-               matrix[i][j] = '0'
-            if matrix[i][j][-1] == ' ':
-                matrix[i][j] = matrix[i][j][:-3]
-    return matrix
-
-def matrix_printer(matrix):
-    for i in range(len(matrix)):
-        line = ''
-        for j in range(len(matrix[0])):
-            line+=matrix[i][j]
-            line+='\t'
-        print(line)
-
-
-
-
-M1 =[
-    ['(c_1)','(-s_1)','0','0'],
-    ['(s_1)', '(c_1)', '0','0'],
-    ['0', '0','1', '(d_1)'],
-    ['0','0','0','1']
-]
-
-M2 = [
-    ['(c_2)', '0', '(s_2)', '0'],
-    ['(s_2)', '0', '(-c_2)', '0'],
-    ['0', '1', '0', '(d_2)'],
-    ['0','0','0','1']
-]
-
-M3 = [
-    ['(c_3)','(s_3)','0','(l_3)(c_3)'],
-    ['(s_3)', '(-c_3)', '0','(l_3)(s_3)'],
-    ['0', '0','(-1)', '(d_3)'],
-    ['0','0','0','1']
-]
-
-M4 = [
-    ['(c_4)', '0', '(s_4)', '0'],
-    ['(s_4)', '0', '(-c_4)', '0'],
-    ['0', '1', '0', '(d_4)'],
-    ['0','0','0','1']
-]
-
-M5 = [
-    ['(c_5)', '0', '(-s_5)', '0'],
-        ['(s_5)', '0', '(c_5)', '0'],
-        ['0', '(-1)', '0', '(d_5)'],
-        ['0','0','0','1']
-]
-
-M6 = [
-    ['(c_6)', '0', '(s_6)', '0'],
-    ['(s_6)', '0', '(-c_6)', '0'],
-    ['0', '1', '0', '(d_6)'],
-    ['0','0','0','1']
-]
-
-# matrix_list =[M1, M2, M3, M4, M5, M6]
-matrix_list =[[
-    ['(c_1)(c_2) + (-s_1)(s_2)(c_3)(c_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(s_4)(c_5) + (c_1)(s_2) + (-s_1)(-c_2)(-1)(s_5)', '(c_1)(c_2) + (-s_1)(s_2)(c_3)(s_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(-c_4)(-1)', '(c_1)(c_2) + (-s_1)(s_2)(c_3)(c_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(s_4)(-s_5) + (c_1)(s_2) + (-s_1)(-c_2)(-1)(c_5)', '(c_1)(c_2) + (-s_1)(s_2)(c_3)(s_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(-c_4)(d_5) + (c_1)(s_2) + (-s_1)(-c_2)(-1)(d_4) + (c_1)(c_2) + (-s_1)(s_2)(l_3)(c_3) + (c_1)(s_2) + (-s_1)(-c_2)(d_3)'], 
-    ['(s_1)(c_2) + (c_1)(s_2)(c_3)(c_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(s_4)(c_5) + (s_1)(s_2) + (c_1)(-c_2)(-1)(s_5)', '(s_1)(c_2) + (c_1)(s_2)(c_3)(s_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(-c_4)(-1)', '(s_1)(c_2) + (c_1)(s_2)(c_3)(c_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(s_4)(-s_5) + (s_1)(s_2) + (c_1)(-c_2)(-1)(c_5)', '(s_1)(c_2) + (c_1)(s_2)(c_3)(s_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(-c_4)(d_5) + (s_1)(s_2) + (c_1)(-c_2)(-1)(d_4) + (s_1)(c_2) + (c_1)(s_2)(l_3)(c_3) + (s_1)(s_2) + (c_1)(-c_2)(d_3)'], 
-    ['(s_3)(c_4) + (-c_3)(s_4)(c_5)', '(s_3)(s_4) + (-c_3)(-c_4)(-1)', '(s_3)(c_4) + (-c_3)(s_4)(-s_5)', '(s_3)(s_4) + (-c_3)(-c_4)(d_5) + (l_3)(s_3) + (d_2) + (d_1)'], 
-    ['0', '0', '0', '1']], M6]
-
-# ACTUAL CALCULATING CODE
-# if __name__ == "__main__":
-    # new_matrix = matrix_prettier(matrix_with_variables_calculator(matrix_list[0],matrix_list[1],result))
-    # for i in range(1,len(matrix_list)-1):
-    #     new_matrix=matrix_prettier(matrix_with_variables_calculator(new_matrix, matrix_list[i+1], result))
-    # print(new_matrix)
-
-
-
-# matrix_printer(matrix_prettier(matrix_with_variables_calculator(A,B,result)))
-
-
-#CALCULATION HISTORY -> get intermediate homogeneous transformation matrix if needed
-M1M2 = [
-    ['(c_1)(c_2) + (-s_1)(s_2)', '0', '(c_1)(s_2) + (-s_1)(-c_2)', '0'], 
-    ['(s_1)(c_2) + (c_1)(s_2)', '0', '(s_1)(s_2) + (c_1)(-c_2)', '0'], 
-    ['0', '1', '0', '(d_2) + (d_1)'], 
-    ['0', '0', '0', '1']]
-
-M1M2M3 = [
-    ['(c_1)(c_2) + (-s_1)(s_2)(c_3)', '(c_1)(c_2) + (-s_1)(s_2)(s_3)', '(c_1)(s_2) + (-s_1)(-c_2)(-1)', '(c_1)(c_2) + (-s_1)(s_2)(l_3)(c_3) + (c_1)(s_2) + (-s_1)(-c_2)(d_3)'], 
-    ['(s_1)(c_2) + (c_1)(s_2)(c_3)', '(s_1)(c_2) + (c_1)(s_2)(s_3)', '(s_1)(s_2) + (c_1)(-c_2)(-1)', '(s_1)(c_2) + (c_1)(s_2)(l_3)(c_3) + (s_1)(s_2) + (c_1)(-c_2)(d_3)'], 
-    ['(s_3)', '(-c_3)', '0', '(l_3)(s_3) + (d_2) + (d_1)'], 
-    ['0', '0', '0', '1']]
-M1M2M3M4 = [
-    ['(c_1)(c_2) + (-s_1)(s_2)(c_3)(c_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(s_4)', '(c_1)(s_2) + (-s_1)(-c_2)(-1)', '(c_1)(c_2) + (-s_1)(s_2)(c_3)(s_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(-c_4)', '(c_1)(s_2) + (-s_1)(-c_2)(-1)(d_4) + (c_1)(c_2) + (-s_1)(s_2)(l_3)(c_3) + (c_1)(s_2) + (-s_1)(-c_2)(d_3)'], 
-    ['(s_1)(c_2) + (c_1)(s_2)(c_3)(c_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(s_4)', '(s_1)(s_2) + (c_1)(-c_2)(-1)', '(s_1)(c_2) + (c_1)(s_2)(c_3)(s_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(-c_4)', '(s_1)(s_2) + (c_1)(-c_2)(-1)(d_4) + (s_1)(c_2) + (c_1)(s_2)(l_3)(c_3) + (s_1)(s_2) + (c_1)(-c_2)(d_3)'], 
-    ['(s_3)(c_4) + (-c_3)(s_4)', '0', '(s_3)(s_4) + (-c_3)(-c_4)', '(l_3)(s_3) + (d_2) + (d_1)'], 
-    ['0', '0', '0', '1']]
-M1M2M3M4M5 = [
-    ['(c_1)(c_2) + (-s_1)(s_2)(c_3)(c_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(s_4)(c_5) + (c_1)(s_2) + (-s_1)(-c_2)(-1)(s_5)', '(c_1)(c_2) + (-s_1)(s_2)(c_3)(s_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(-c_4)(-1)', '(c_1)(c_2) + (-s_1)(s_2)(c_3)(c_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(s_4)(-s_5) + (c_1)(s_2) + (-s_1)(-c_2)(-1)(c_5)', '(c_1)(c_2) + (-s_1)(s_2)(c_3)(s_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(-c_4)(d_5) + (c_1)(s_2) + (-s_1)(-c_2)(-1)(d_4) + (c_1)(c_2) + (-s_1)(s_2)(l_3)(c_3) + (c_1)(s_2) + (-s_1)(-c_2)(d_3)'], 
-    ['(s_1)(c_2) + (c_1)(s_2)(c_3)(c_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(s_4)(c_5) + (s_1)(s_2) + (c_1)(-c_2)(-1)(s_5)', '(s_1)(c_2) + (c_1)(s_2)(c_3)(s_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(-c_4)(-1)', '(s_1)(c_2) + (c_1)(s_2)(c_3)(c_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(s_4)(-s_5) + (s_1)(s_2) + (c_1)(-c_2)(-1)(c_5)', '(s_1)(c_2) + (c_1)(s_2)(c_3)(s_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(-c_4)(d_5) + (s_1)(s_2) + (c_1)(-c_2)(-1)(d_4) + (s_1)(c_2) + (c_1)(s_2)(l_3)(c_3) + (s_1)(s_2) + (c_1)(-c_2)(d_3)'], 
-    ['(s_3)(c_4) + (-c_3)(s_4)(c_5)', '(s_3)(s_4) + (-c_3)(-c_4)(-1)', '(s_3)(c_4) + (-c_3)(s_4)(-s_5)', '(s_3)(s_4) + (-c_3)(-c_4)(d_5) + (l_3)(s_3) + (d_2) + (d_1)'], 
-    ['0', '0', '0', '1']]
-M1M2M3M4M5M6 = [['(c_1)(c_2) + (-s_1)(s_2)(c_3)(c_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(s_4)(c_5) + (c_1)(s_2) + (-s_1)(-c_2)(-1)(s_5)(c_6) + (c_1)(c_2) + (-s_1)(s_2)(c_3)(s_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(-c_4)(-1)(s_6)', '(c_1)(c_2) + (-s_1)(s_2)(c_3)(c_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(s_4)(-s_5) + (c_1)(s_2) + (-s_1)(-c_2)(-1)(c_5)', '(c_1)(c_2) + (-s_1)(s_2)(c_3)(c_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(s_4)(c_5) + (c_1)(s_2) + (-s_1)(-c_2)(-1)(s_5)(s_6) + (c_1)(c_2) + (-s_1)(s_2)(c_3)(s_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(-c_4)(-1)(-c_6)', '(c_1)(c_2) + (-s_1)(s_2)(c_3)(c_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(s_4)(-s_5) + (c_1)(s_2) + (-s_1)(-c_2)(-1)(c_5)(d_6) + (c_1)(c_2) + (-s_1)(s_2)(c_3)(s_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(-c_4)(d_5) + (c_1)(s_2) + (-s_1)(-c_2)(-1)(d_4) + (c_1)(c_2) + (-s_1)(s_2)(l_3)(c_3) + (c_1)(s_2) + (-s_1)(-c_2)(d_3)'], 
-['(s_1)(c_2) + (c_1)(s_2)(c_3)(c_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(s_4)(c_5) + (s_1)(s_2) + (c_1)(-c_2)(-1)(s_5)(c_6) + (s_1)(c_2) + (c_1)(s_2)(c_3)(s_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(-c_4)(-1)(s_6)', '(s_1)(c_2) + (c_1)(s_2)(c_3)(c_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(s_4)(-s_5) + (s_1)(s_2) + (c_1)(-c_2)(-1)(c_5)', '(s_1)(c_2) + (c_1)(s_2)(c_3)(c_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(s_4)(c_5) + (s_1)(s_2) + (c_1)(-c_2)(-1)(s_5)(s_6) + (s_1)(c_2) + (c_1)(s_2)(c_3)(s_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(-c_4)(-1)(-c_6)', '(s_1)(c_2) + (c_1)(s_2)(c_3)(c_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(s_4)(-s_5) + (s_1)(s_2) + (c_1)(-c_2)(-1)(c_5)(d_6) + (s_1)(c_2) + (c_1)(s_2)(c_3)(s_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(-c_4)(d_5) + (s_1)(s_2) + (c_1)(-c_2)(-1)(d_4) + (s_1)(c_2) + (c_1)(s_2)(l_3)(c_3) + (s_1)(s_2) + (c_1)(-c_2)(d_3)'], 
-['(s_3)(c_4) + (-c_3)(s_4)(c_5)(c_6) + (s_3)(s_4) + (-c_3)(-c_4)(-1)(s_6)', '(s_3)(c_4) + (-c_3)(s_4)(-s_5)', '(s_3)(c_4) + (-c_3)(s_4)(c_5)(s_6) + (s_3)(s_4) + (-c_3)(-c_4)(-1)(-c_6)', '(s_3)(c_4) + (-c_3)(s_4)(-s_5)(d_6) + (s_3)(s_4) + (-c_3)(-c_4)(d_5) + (l_3)(s_3) + (d_2) + (d_1)'], 
-['0', '0', '0', '1']]
-
-# Final Endpoint Position:
-endpoint = {
-    'x' : '(c_1)(c_2) + (-s_1)(s_2)(c_3)(c_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(s_4)(-s_5) + (c_1)(s_2) + (-s_1)(-c_2)(-1)(c_5)(d_6) + (c_1)(c_2) + (-s_1)(s_2)(c_3)(s_4) + (c_1)(c_2) + (-s_1)(s_2)(s_3)(-c_4)(d_5) + (c_1)(s_2) + (-s_1)(-c_2)(-1)(d_4) + (c_1)(c_2) + (-s_1)(s_2)(l_3)(c_3) + (c_1)(s_2) + (-s_1)(-c_2)(d_3)',
-    'y' : '(s_1)(c_2) + (c_1)(s_2)(c_3)(c_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(s_4)(-s_5) + (s_1)(s_2) + (c_1)(-c_2)(-1)(c_5)(d_6) + (s_1)(c_2) + (c_1)(s_2)(c_3)(s_4) + (s_1)(c_2) + (c_1)(s_2)(s_3)(-c_4)(d_5) + (s_1)(s_2) + (c_1)(-c_2)(-1)(d_4) + (s_1)(c_2) + (c_1)(s_2)(l_3)(c_3) + (s_1)(s_2) + (c_1)(-c_2)(d_3)',
-    'z' : '(s_3)(c_4) + (-c_3)(s_4)(-s_5)(d_6) + (s_3)(s_4) + (-c_3)(-c_4)(d_5) + (l_3)(s_3) + (d_2) + (d_1)'
-}
-
-# Changed_Like = {
-#    theta_1 : a,
-#    theta_2 : b,
-#    theta_3 : c,
-#    theta_4 : d,
-#    theta_5 : e,
-#    theta_6 : f,
-#    d_1 : u,
-#    d_2 : v,
-#    d_3 : w,
-#    d_4 : x,
-#    d_5 : y,
-#    d_6 : z,
-#    l_3 : l
-# }
-
-# Constant_Values : LinkLength, Joint Offset at R-joint:
-# d_1 = 145 mm
-# d_2 = 135 mm
-# d_3 = 135 mm
-# d_4 = 270 mm
-# d_5 = 100 mm
-# d_6 = 65 mm
-# 
-# l_3 = 390 mm 
-
-"""Step#5 Obtain Jacobian Matrix"""
-
 a = symbols('a')
 b = symbols('b')
 c = symbols('c')
@@ -213,28 +26,89 @@ z = symbols('z')
 
 l = symbols('l')
 
+# """unit : mm"""
+# u = 145
+# v = 135
+# w = 135
+# x = 270
+# y = 100
+# z = 65
+ 
+# l = 390
+
+# """unit : rad"""
+# a = theta_1
+# b = theta_2
+# c = theta_3
+# d = theta_4
+# e = theta_5
+# f = theta_6
+
+DH_params = [
+    [0,0,a,u],
+    [l,-pi/2,b,v],
+    [0,0,c,w],
+    [0, pi/2,d,x],
+    [0,-pi/2,e,y],
+    [0,pi/2,f,z]
+]
+
+"""Step#3 Compute homogeneous transformation matrix with euler angles"""
+homogeneous_matricies = []
+for i in range(len(DH_params)):
+    dh = DH_params[i]
+    homogeneous_matricies.append([[cos(dh[2]), -sin(dh[2])*cos(dh[1]), sin(dh[2])*sin(dh[1]), dh[0]*cos(dh[2])],
+    [sin(dh[2]), cos(dh[2])*cos(dh[1]), -cos(dh[2])*sin(dh[1]), dh[0]*sin(dh[2])],
+    [0, sin(dh[1]), cos(dh[1]), dh[3]],
+    [0,0,0,1]])
+
+# print(homogeneous_matricies)
+M1 = np.array(homogeneous_matricies[0])
+M2 = np.array(homogeneous_matricies[1])
+M3 = np.array(homogeneous_matricies[2])
+M4 = np.array(homogeneous_matricies[3])
+M5 = np.array(homogeneous_matricies[4])
+M6 = np.array(homogeneous_matricies[5])
+
+"""Step#4 Calculate homogeneous transformation matrix from GND to End-Effector"""
+M1M2 = np.dot(M1,M2)
+M1M2M3 = np.dot(M1M2,M3)
+M1M2M3M4 = np.dot(M1M2M3, M4)
+M1M2M3M4M5 = np.dot(M1M2M3M4,M5)
+M1M2M3M4M5M6 = np.dot(M1M2M3M4M5,M6)
+
+# individual the matrices represent internal coordinate transformation for each situation! 
+
+homogeneous_transformation_matrix = M1M2M3M4M5M6
+# print(homogeneous_transformation_matrix)
+
+homogeneous_transformation_matrix = [
+    [((-sin(a)*cos(b) - sin(b)*cos(a))*sin(e) + (-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*sin(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d))*cos(e))*cos(f) + (-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) - (-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c))*sin(f)
+  ,(-sin(a)*cos(b) - sin(b)*cos(a))*cos(e) - (-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*sin(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d))*sin(e)
+  ,((-sin(a)*cos(b) - sin(b)*cos(a))*sin(e) + (-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*sin(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d))*cos(e))*sin(f) - (-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) - (-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c))*cos(f)
+  ,-l*sin(a)*sin(b) + l*cos(a)*cos(b) + w*(-sin(a)*cos(b) - sin(b)*cos(a)) + x*(-sin(a)*cos(b) - sin(b)*cos(a)) + y*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c)) + z*((-sin(a)*cos(b) - sin(b)*cos(a))*cos(e) - (-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*sin(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d))*sin(e))]
+ ,[((-sin(a)*sin(b) + cos(a)*cos(b))*sin(e) + (-(sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d))*cos(e))*cos(f) + (-(sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*cos(d) - (sin(a)*cos(b) + sin(b)*cos(a))*sin(d)*cos(c))*sin(f)
+  ,(-sin(a)*sin(b) + cos(a)*cos(b))*cos(e) - (-(sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d))*sin(e)
+  ,((-sin(a)*sin(b) + cos(a)*cos(b))*sin(e) + (-(sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d))*cos(e))*sin(f) - (-(sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*cos(d) - (sin(a)*cos(b) + sin(b)*cos(a))*sin(d)*cos(c))*cos(f)
+  ,l*sin(a)*cos(b) + l*sin(b)*cos(a) + w*(-sin(a)*sin(b) + cos(a)*cos(b)) + x*(-sin(a)*sin(b) + cos(a)*cos(b)) + y*((sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*cos(d) + (sin(a)*cos(b) + sin(b)*cos(a))*sin(d)*cos(c)) + z*((-sin(a)*sin(b) + cos(a)*cos(b))*cos(e) - (-(sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d))*sin(e))]
+ ,[(sin(c)*sin(d) - cos(c)*cos(d))*sin(f) + (-sin(c)*cos(d) - sin(d)*cos(c))*cos(e)*cos(f)
+  ,-(-sin(c)*cos(d) - sin(d)*cos(c))*sin(e)
+  ,-(sin(c)*sin(d) - cos(c)*cos(d))*cos(f) + (-sin(c)*cos(d) - sin(d)*cos(c))*sin(f)*cos(e)
+  ,u + v + y*(-sin(c)*sin(d) + cos(c)*cos(d)) - z*(-sin(c)*cos(d) - sin(d)*cos(c))*sin(e)]
+ ,[0, 0, 0, 1]]
+
+
+
+"""Step#5 Obtain Jacobian Matrix"""
 
 """
 With Homogeneous Transformation Matrix, we can obtain endpoint position and orientation with joint angles, and check if it is singular point or not!
 """
-"""Just in Case!
-[
-    [cos(a)*cos(b) + -sin(a)*sin(b)*cos(c)*cos(d) + cos(a)*cos(b) + -sin(a)*sin(b)*sin(c)*sin(d)*cos(e) + cos(a)*sin(b) + -sin(a)*-cos(b)*(-1)*sin(e)*cos(f) + cos(a)*cos(b) + -sin(a)*sin(b)*cos(c)*sin(d) + cos(a)*cos(b) + -sin(a)*sin(b)*sin(c)*-cos(d)*(-1)*sin(f), cos(a)*cos(b) + -sin(a)*sin(b)*cos(c)*cos(d) + cos(a)*cos(b) + -sin(a)*sin(b)*sin(c)*sin(d)*-sin(e) + cos(a)*sin(b) + -sin(a)*-cos(b)*(-1)*cos(e), (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(cos(c))*(cos(d)) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(sin(c))*(sin(d))*(cos(e)) + (cos(a))*(sin(b)) + (-sin(a))*(-cos(b))*(-1)*(sin(e))*(sin(f)) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(cos(c))*(sin(d)) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(sin(c))*(-cos(d))*(-1)*(-cos(f)), (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(cos(c))*(cos(d)) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(sin(c))*(sin(d))*(-sin(e)) + (cos(a))*(sin(b)) + (-sin(a))*(-cos(b))*(-1)*(cos(e))*(z) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(cos(c))*(sin(d)) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(sin(c))*(-cos(d))*(y) + (cos(a))*(sin(b)) + (-sin(a))*(-cos(b))*(-1)*(x) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(l)*(cos(c)) + (cos(a))*(sin(b)) + (-sin(a))*(-cos(b))*(w)], 
-    [(sin(a))(cos(b)) + (cos(a))(sin(b))(cos(c))(cos(d)) + (sin(a))(cos(b)) + (cos(a))(sin(b))(sin(c))(sin(d))(cos(e)) + (sin(a))(sin(b)) + (cos(a))(-cos(b))(-1)(sin(e))(cos(f)) + (sin(a))(cos(b)) + (cos(a))(sin(b))(cos(c))(sin(d)) + (sin(a))(cos(b)) + (cos(a))(sin(b))(sin(c))(-cos(d))(-1)(sin(f)), (sin(a))(cos(b)) + (cos(a))(sin(b))(cos(c))(cos(d)) + (sin(a))(cos(b)) + (cos(a))(sin(b))(sin(c))(sin(d))(-sin(e)) + (sin(a))(sin(b)) + (cos(a))(-cos(b))(-1)(cos(e)), (sin(a))(cos(b)) + (cos(a))(sin(b))(cos(c))(cos(d)) + (sin(a))(cos(b)) + (cos(a))(sin(b))(sin(c))(sin(d))(cos(e)) + (sin(a))(sin(b)) + (cos(a))(-cos(b))(-1)(sin(e))(sin(f)) + (sin(a))(cos(b)) + (cos(a))(sin(b))(cos(c))(sin(d)) + (sin(a))(cos(b)) + (cos(a))(sin(b))(sin(c))(-cos(d))(-1)(-cos(f)), (sin(a))(cos(b)) + (cos(a))(sin(b))(cos(c))(cos(d)) + (sin(a))(cos(b)) + (cos(a))(sin(b))(sin(c))(sin(d))(-sin(e)) + (sin(a))(sin(b)) + (cos(a))(-cos(b))(-1)(cos(e))(z) + (sin(a))(cos(b)) + (cos(a))(sin(b))(cos(c))(sin(d)) + (sin(a))(cos(b)) + (cos(a))(sin(b))(sin(c))(-cos(d))(y) + (sin(a))(sin(b)) + (cos(a))(-cos(b))(-1)(x) + (sin(a))(cos(b)) + (cos(a))(sin(b))(l)(cos(c)) + (sin(a))(sin(b)) + (cos(a))(-cos(b))(w)], 
-    [(sin(c))(cos(d)) + (-cos(c))(sin(d))(cos(e))(cos(f)) + (sin(c))(sin(d)) + (-cos(c))(-cos(d))(-1)(sin(f)), (sin(c))(cos(d)) + (-cos(c))(sin(d))(-sin(e)), (sin(c))(cos(d)) + (-cos(c))(sin(d))(cos(e))(sin(f)) + (sin(c))(sin(d)) + (-cos(c))(-cos(d))(-1)(-cos(f)), (sin(c))(cos(d)) + (-cos(c))(sin(d))(-sin(e))(z) + (sin(c))(sin(d)) + (-cos(c))(-cos(d))(y) + (l)(sin(c)) + (v) + (u)], 
-    [0,0,0,1]]"""
 
-Homogeneous_Transformation_Matrix=[
-    [cos(a)*cos(b) + -sin(a)*sin(b)*cos(c)*cos(d) + cos(a)*cos(b) + -sin(a)*sin(b)*sin(c)*sin(d)*cos(e) + cos(a)*sin(b) + -sin(a)*-cos(b)*(-1)*sin(e)*cos(f) + cos(a)*cos(b) + -sin(a)*sin(b)*cos(c)*sin(d) + cos(a)*cos(b) + -sin(a)*sin(b)*sin(c)*-cos(d)*(-1)*sin(f), cos(a)*cos(b) + -sin(a)*sin(b)*cos(c)*cos(d) + cos(a)*cos(b) + -sin(a)*sin(b)*sin(c)*sin(d)*-sin(e) + cos(a)*sin(b) + -sin(a)*-cos(b)*(-1)*cos(e), (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(cos(c))*(cos(d)) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(sin(c))*(sin(d))*(cos(e)) + (cos(a))*(sin(b)) + (-sin(a))*(-cos(b))*(-1)*(sin(e))*(sin(f)) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(cos(c))*(sin(d)) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(sin(c))*(-cos(d))*(-1)*(-cos(f)), (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(cos(c))*(cos(d)) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(sin(c))*(sin(d))*(-sin(e)) + (cos(a))*(sin(b)) + (-sin(a))*(-cos(b))*(-1)*(cos(e))*(z) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(cos(c))*(sin(d)) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(sin(c))*(-cos(d))*(y) + (cos(a))*(sin(b)) + (-sin(a))*(-cos(b))*(-1)*(x) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(l)*(cos(c)) + (cos(a))*(sin(b)) + (-sin(a))*(-cos(b))*(w)],
-    [(sin(a))*(cos(b)) + (cos(a))*(sin(b))*(cos(c))*(cos(d)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(sin(c))*(sin(d))*(cos(e)) + (sin(a))*(sin(b)) + (cos(a))*(-cos(b))*(-1)*(sin(e))*(cos(f)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(cos(c))*(sin(d)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(sin(c))*(-cos(d))*(-1)*(sin(f)), (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(cos(c))*(cos(d)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(sin(c))*(sin(d))*(-sin(e)) + (sin(a))*(sin(b)) + (cos(a))*(-cos(b))*(-1)*(cos(e)), (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(cos(c))*(cos(d)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(sin(c))*(sin(d))*(cos(e)) + (sin(a))*(sin(b)) + (cos(a))*(-cos(b))*(-1)*(sin(e))*(sin(f)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(cos(c))*(sin(d)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(sin(c))*(-cos(d))*(-1)*(-cos(f)), (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(cos(c))*(cos(d)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(sin(c))*(sin(d))*(-sin(e)) + (sin(a))*(sin(b)) + (cos(a))*(-cos(b))*(-1)*(cos(e))*(z) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(cos(c))*(sin(d)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(sin(c))*(-cos(d))*(y) + (sin(a))*(sin(b)) + (cos(a))*(-cos(b))*(-1)*(x) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(l)*(cos(c)) + (sin(a))*(sin(b)) + (cos(a))*(-cos(b))*(w)],
-    [(sin(c))*(cos(d)) + (-cos(c))*(sin(d))*(cos(e))*(cos(f)) + (sin(c))*(sin(d)) + (-cos(c))*(-cos(d))*(-1)*(sin(f)), (sin(c))*(cos(d)) + (-cos(c))*(sin(d))*(-sin(e)), (sin(c))*(cos(d)) + (-cos(c))*(sin(d))*(cos(e))*(sin(f)) + (sin(c))*(sin(d)) + (-cos(c))*(-cos(d))*(-1)*(-cos(f)), (sin(c))*(cos(d)) + (-cos(c))*(sin(d))*(-sin(e))*(z) + (sin(c))*(sin(d)) + (-cos(c))*(-cos(d))*(y) + (l)*(sin(c)) + (v) + (u)],
-    [0,0,0,1]]
 
-endpoint=[
-    (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(cos(c))*(cos(d)) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(sin(c))*(sin(d))*(-sin(e)) + (cos(a))*(sin(b)) + (-sin(a))*(-cos(b))*(-1)*(cos(e))*(z) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(cos(c))*(sin(d)) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(sin(c))*(-cos(d))*(y) + (cos(a))*(sin(b)) + (-sin(a))*(-cos(b))*(-1)*(x) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(l)*(cos(c)) + (cos(a))*(sin(b)) + (-sin(a))*(-cos(b))*(w),
-    (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(cos(c))*(cos(d)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(sin(c))*(sin(d))*(-sin(e)) + (sin(a))*(sin(b)) + (cos(a))*(-cos(b))*(-1)*(cos(e))*(z) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(cos(c))*(sin(d)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(sin(c))*(-cos(d))*(y) + (sin(a))*(sin(b)) + (cos(a))*(-cos(b))*(-1)*(x) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(l)*(cos(c)) + (sin(a))*(sin(b)) + (cos(a))*(-cos(b))*(w),
-    (sin(c))*(cos(d)) + (-cos(c))*(sin(d))*(-sin(e))*(z) + (sin(c))*(sin(d)) + (-cos(c))*(-cos(d))*(y) + (l)*(sin(c)) + (v) + (u)
-]
+endpoint=[-l*sin(a)*sin(b) + l*cos(a)*cos(b) + w*(-sin(a)*cos(b) - sin(b)*cos(a)) + x*(-sin(a)*cos(b) - sin(b)*cos(a)) + y*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c)) + z*((-sin(a)*cos(b) - sin(b)*cos(a))*cos(e) - (-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*sin(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d))*sin(e)),
+    l*sin(a)*cos(b) + l*sin(b)*cos(a) + w*(-sin(a)*sin(b) + cos(a)*cos(b)) + x*(-sin(a)*sin(b) + cos(a)*cos(b)) + y*((sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*cos(d) + (sin(a)*cos(b) + sin(b)*cos(a))*sin(d)*cos(c)) + z*((-sin(a)*sin(b) + cos(a)*cos(b))*cos(e) - (-(sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d))*sin(e)),
+    u + v + y*(-sin(c)*sin(d) + cos(c)*cos(d)) - z*(-sin(c)*cos(d) - sin(d)*cos(c))*sin(e)]
 
 # variable_list = [a,b,c,d,e,f]
 # Jacobian = [
@@ -247,11 +121,10 @@ endpoint=[
 #         Jacobian[j][i] = endpoint[j].diff(variable_list[i])
 
 # 3x6 matrix
-Jacobian = [
-    [-l*sin(b)*cos(a)*cos(c) + w*cos(a)*cos(b) - x*cos(a)*cos(b) + y*sin(b)*sin(c)*cos(a)*cos(d) - z*cos(a)*cos(b)*cos(e) - 3*sin(a)*sin(b) - 5*sin(a)*cos(b) + sin(b)*sin(c)*sin(d)*sin(e)*cos(a) - sin(b)*sin(d)*cos(a)*cos(c) - sin(b)*cos(a)*cos(c)*cos(d), -l*sin(a)*cos(b)*cos(c) - w*sin(a)*sin(b) + x*sin(a)*sin(b) + y*sin(a)*sin(c)*cos(b)*cos(d) + z*sin(a)*sin(b)*cos(e) + sin(a)*sin(c)*sin(d)*sin(e)*cos(b) - sin(a)*sin(d)*cos(b)*cos(c) - sin(a)*cos(b)*cos(c)*cos(d) - 5*sin(b)*cos(a) + 3*cos(a)*cos(b), l*sin(a)*sin(b)*sin(c) + y*sin(a)*sin(b)*cos(c)*cos(d) + sin(a)*sin(b)*sin(c)*sin(d) + sin(a)*sin(b)*sin(c)*cos(d) + sin(a)*sin(b)*sin(d)*sin(e)*cos(c), -y*sin(a)*sin(b)*sin(c)*sin(d) + sin(a)*sin(b)*sin(c)*sin(e)*cos(d) + sin(a)*sin(b)*sin(d)*cos(c) - sin(a)*sin(b)*cos(c)*cos(d), z*sin(a)*sin(e)*cos(b) + sin(a)*sin(b)*sin(c)*sin(d)*cos(e), 0],
-    [-l*sin(a)*sin(b)*cos(c) + w*sin(a)*cos(b) - x*sin(a)*cos(b) + y*sin(a)*sin(b)*sin(c)*cos(d) - z*sin(a)*cos(b)*cos(e) + sin(a)*sin(b)*sin(c)*sin(d)*sin(e) - sin(a)*sin(b)*sin(d)*cos(c) - sin(a)*sin(b)*cos(c)*cos(d) + 3*sin(b)*cos(a) + 5*cos(a)*cos(b), l*cos(a)*cos(b)*cos(c) + w*sin(b)*cos(a) - x*sin(b)*cos(a) - y*sin(c)*cos(a)*cos(b)*cos(d) - z*sin(b)*cos(a)*cos(e) - 5*sin(a)*sin(b) + 3*sin(a)*cos(b) - sin(c)*sin(d)*sin(e)*cos(a)*cos(b) + sin(d)*cos(a)*cos(b)*cos(c) + cos(a)*cos(b)*cos(c)*cos(d), -l*sin(b)*sin(c)*cos(a) - y*sin(b)*cos(a)*cos(c)*cos(d) - sin(b)*sin(c)*sin(d)*cos(a) - sin(b)*sin(c)*cos(a)*cos(d) - sin(b)*sin(d)*sin(e)*cos(a)*cos(c), y*sin(b)*sin(c)*sin(d)*cos(a) - sin(b)*sin(c)*sin(e)*cos(a)*cos(d) - sin(b)*sin(d)*cos(a)*cos(c) + sin(b)*cos(a)*cos(c)*cos(d), -z*sin(e)*cos(a)*cos(b) - sin(b)*sin(c)*sin(d)*cos(a)*cos(e), 0], 
-    [0, 0, l*cos(c) - y*sin(c)*cos(d) - z*sin(c)*sin(d)*sin(e) + sin(d)*cos(c) + cos(c)*cos(d), -y*sin(d)*cos(c) + z*sin(e)*cos(c)*cos(d) - sin(c)*sin(d) + sin(c)*cos(d), z*sin(d)*cos(c)*cos(e), 0]]
-
+Jacobian =[
+    [-l*sin(a)*cos(b) - l*sin(b)*cos(a) + w*(sin(a)*sin(b) - cos(a)*cos(b)) + x*(sin(a)*sin(b) - cos(a)*cos(b)) + y*((-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*cos(d) + (-sin(a)*cos(b) - sin(b)*cos(a))*sin(d)*cos(c)) + z*((sin(a)*sin(b) - cos(a)*cos(b))*cos(e) + (-(-sin(a)*cos(b) - sin(b)*cos(a))*cos(c)*cos(d) - (sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d))*sin(e)), -l*sin(a)*cos(b) - l*sin(b)*cos(a) + w*(sin(a)*sin(b) - cos(a)*cos(b)) + x*(sin(a)*sin(b) - cos(a)*cos(b)) + y*((-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*cos(d) + (-sin(a)*cos(b) - sin(b)*cos(a))*sin(d)*cos(c)) + z*((sin(a)*sin(b) - cos(a)*cos(b))*cos(e) + (-(-sin(a)*cos(b) - sin(b)*cos(a))*cos(c)*cos(d) - (sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d))*sin(e)), y*(-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*sin(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d)) + z*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(d)*cos(c))*sin(e), y*(-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*sin(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d)) + z*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*cos(d))*sin(e), z*(-(-sin(a)*cos(b) - sin(b)*cos(a))*sin(e) + (-(-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d))*cos(e)), 0], 
+    [-l*sin(a)*sin(b) + l*cos(a)*cos(b) + w*(-sin(a)*cos(b) - sin(b)*cos(a)) + x*(-sin(a)*cos(b) - sin(b)*cos(a)) + y*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c)) + z*((-sin(a)*cos(b) - sin(b)*cos(a))*cos(e) + (-(-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d))*sin(e)), -l*sin(a)*sin(b) + l*cos(a)*cos(b) + w*(-sin(a)*cos(b) - sin(b)*cos(a)) + x*(-sin(a)*cos(b) - sin(b)*cos(a)) + y*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c)) + z*((-sin(a)*cos(b) - sin(b)*cos(a))*cos(e) + (-(-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d))*sin(e)), y*(-(sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d)) + z*(-(-sin(a)*cos(b) - sin(b)*cos(a))*sin(d)*cos(c) + (sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*cos(d))*sin(e), y*(-(sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d)) + z*(-(-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*cos(d) + (sin(a)*cos(b) + sin(b)*cos(a))*sin(d)*cos(c))*sin(e), z*(-(-sin(a)*sin(b) + cos(a)*cos(b))*sin(e) + (-(-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*sin(d) - (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d))*cos(e)), 0], 
+    [0, 0, y*(-sin(c)*cos(d) - sin(d)*cos(c)) - z*(sin(c)*sin(d) - cos(c)*cos(d))*sin(e), y*(-sin(c)*cos(d) - sin(d)*cos(c)) - z*(sin(c)*sin(d) - cos(c)*cos(d))*sin(e), -z*(-sin(c)*cos(d) - sin(d)*cos(c))*cos(e), 0]]
 
 """Step#6 Inv Velocity Kinematics"""
 # Using psuedo inverse matrix, we can easily appraoch to relation from endpoint position and orientation to joint angles.
@@ -288,15 +161,10 @@ K = Matrix([
 
 Compliance = jacobian * (K**-1) * (jacobian.T)
 # print(Compliance)
-Compliance = np.array([[(z*sin(a)*sin(e)*cos(b) + sin(a)*sin(b)*sin(c)*sin(d)*cos(e))*(3.7037037037037*z*sin(a)*sin(e)*cos(b) + 3.7037037037037*sin(a)*sin(b)*sin(c)*sin(d)*cos(e)) + (-6.66666666666667*y*sin(a)*sin(b)*sin(c)*sin(d) + 6.66666666666667*sin(a)*sin(b)*sin(c)*sin(e)*cos(d) + 6.66666666666667*sin(a)*sin(b)*sin(d)*cos(c) - 6.66666666666667*sin(a)*sin(b)*cos(c)*cos(d))*(-y*sin(a)*sin(b)*sin(c)*sin(d) + sin(a)*sin(b)*sin(c)*sin(e)*cos(d) + sin(a)*sin(b)*sin(d)*cos(c) - sin(a)*sin(b)*cos(c)*cos(d)) + (l*sin(a)*sin(b)*sin(c) + y*sin(a)*sin(b)*cos(c)*cos(d) + sin(a)*sin(b)*sin(c)*sin(d) + sin(a)*sin(b)*sin(c)*cos(d) + sin(a)*sin(b)*sin(d)*sin(e)*cos(c))*(1.0*l*sin(a)*sin(b)*sin(c) + 1.0*y*sin(a)*sin(b)*cos(c)*cos(d) + 1.0*sin(a)*sin(b)*sin(c)*sin(d) + 1.0*sin(a)*sin(b)*sin(c)*cos(d) + 1.0*sin(a)*sin(b)*sin(d)*sin(e)*cos(c)) + (-l*sin(a)*cos(b)*cos(c) - w*sin(a)*sin(b) + x*sin(a)*sin(b) + y*sin(a)*sin(c)*cos(b)*cos(d) + z*sin(a)*sin(b)*cos(e) + sin(a)*sin(c)*sin(d)*sin(e)*cos(b) - sin(a)*sin(d)*cos(b)*cos(c) - sin(a)*cos(b)*cos(c)*cos(d) - 5*sin(b)*cos(a) + 3*cos(a)*cos(b))*(-1.0*l*sin(a)*cos(b)*cos(c) - 1.0*w*sin(a)*sin(b) + 1.0*x*sin(a)*sin(b) + 1.0*y*sin(a)*sin(c)*cos(b)*cos(d) + 1.0*z*sin(a)*sin(b)*cos(e) + 1.0*sin(a)*sin(c)*sin(d)*sin(e)*cos(b) - 1.0*sin(a)*sin(d)*cos(b)*cos(c) - 1.0*sin(a)*cos(b)*cos(c)*cos(d) - 5.0*sin(b)*cos(a) + 3.0*cos(a)*cos(b)) + (-l*sin(b)*cos(a)*cos(c) + w*cos(a)*cos(b) - x*cos(a)*cos(b) + y*sin(b)*sin(c)*cos(a)*cos(d) - z*cos(a)*cos(b)*cos(e) - 3*sin(a)*sin(b) - 5*sin(a)*cos(b) + sin(b)*sin(c)*sin(d)*sin(e)*cos(a) - sin(b)*sin(d)*cos(a)*cos(c) - sin(b)*cos(a)*cos(c)*cos(d))*(-1.0*l*sin(b)*cos(a)*cos(c) + 1.0*w*cos(a)*cos(b) - 1.0*x*cos(a)*cos(b) + 1.0*y*sin(b)*sin(c)*cos(a)*cos(d) - 1.0*z*cos(a)*cos(b)*cos(e) - 3.0*sin(a)*sin(b) - 5.0*sin(a)*cos(b) + 1.0*sin(b)*sin(c)*sin(d)*sin(e)*cos(a) - 1.0*sin(b)*sin(d)*cos(a)*cos(c) - 1.0*sin(b)*cos(a)*cos(c)*cos(d))
-  ,(3.7037037037037*z*sin(a)*sin(e)*cos(b) + 3.7037037037037*sin(a)*sin(b)*sin(c)*sin(d)*cos(e))*(-z*sin(e)*cos(a)*cos(b) - sin(b)*sin(c)*sin(d)*cos(a)*cos(e)) + (-6.66666666666667*y*sin(a)*sin(b)*sin(c)*sin(d) + 6.66666666666667*sin(a)*sin(b)*sin(c)*sin(e)*cos(d) + 6.66666666666667*sin(a)*sin(b)*sin(d)*cos(c) - 6.66666666666667*sin(a)*sin(b)*cos(c)*cos(d))*(y*sin(b)*sin(c)*sin(d)*cos(a) - sin(b)*sin(c)*sin(e)*cos(a)*cos(d) - sin(b)*sin(d)*cos(a)*cos(c) + sin(b)*cos(a)*cos(c)*cos(d)) + (1.0*l*sin(a)*sin(b)*sin(c) + 1.0*y*sin(a)*sin(b)*cos(c)*cos(d) + 1.0*sin(a)*sin(b)*sin(c)*sin(d) + 1.0*sin(a)*sin(b)*sin(c)*cos(d) + 1.0*sin(a)*sin(b)*sin(d)*sin(e)*cos(c))*(-l*sin(b)*sin(c)*cos(a) - y*sin(b)*cos(a)*cos(c)*cos(d) - sin(b)*sin(c)*sin(d)*cos(a) - sin(b)*sin(c)*cos(a)*cos(d) - sin(b)*sin(d)*sin(e)*cos(a)*cos(c)) + (-l*sin(a)*sin(b)*cos(c) + w*sin(a)*cos(b) - x*sin(a)*cos(b) + y*sin(a)*sin(b)*sin(c)*cos(d) - z*sin(a)*cos(b)*cos(e) + sin(a)*sin(b)*sin(c)*sin(d)*sin(e) - sin(a)*sin(b)*sin(d)*cos(c) - sin(a)*sin(b)*cos(c)*cos(d) + 3*sin(b)*cos(a) + 5*cos(a)*cos(b))*(-1.0*l*sin(b)*cos(a)*cos(c) + 1.0*w*cos(a)*cos(b) - 1.0*x*cos(a)*cos(b) + 1.0*y*sin(b)*sin(c)*cos(a)*cos(d) - 1.0*z*cos(a)*cos(b)*cos(e) - 3.0*sin(a)*sin(b) - 5.0*sin(a)*cos(b) + 1.0*sin(b)*sin(c)*sin(d)*sin(e)*cos(a) - 1.0*sin(b)*sin(d)*cos(a)*cos(c) - 1.0*sin(b)*cos(a)*cos(c)*cos(d)) + (-1.0*l*sin(a)*cos(b)*cos(c) - 1.0*w*sin(a)*sin(b) + 1.0*x*sin(a)*sin(b) + 1.0*y*sin(a)*sin(c)*cos(b)*cos(d) + 1.0*z*sin(a)*sin(b)*cos(e) + 1.0*sin(a)*sin(c)*sin(d)*sin(e)*cos(b) - 1.0*sin(a)*sin(d)*cos(b)*cos(c) - 1.0*sin(a)*cos(b)*cos(c)*cos(d) - 5.0*sin(b)*cos(a) + 3.0*cos(a)*cos(b))*(l*cos(a)*cos(b)*cos(c) + w*sin(b)*cos(a) - x*sin(b)*cos(a) - y*sin(c)*cos(a)*cos(b)*cos(d) - z*sin(b)*cos(a)*cos(e) - 5*sin(a)*sin(b) + 3*sin(a)*cos(b) - sin(c)*sin(d)*sin(e)*cos(a)*cos(b) + sin(d)*cos(a)*cos(b)*cos(c) + cos(a)*cos(b)*cos(c)*cos(d))
-  ,z*(3.7037037037037*z*sin(a)*sin(e)*cos(b) + 3.7037037037037*sin(a)*sin(b)*sin(c)*sin(d)*cos(e))*sin(d)*cos(c)*cos(e) + (-y*sin(d)*cos(c) + z*sin(e)*cos(c)*cos(d) - sin(c)*sin(d) + sin(c)*cos(d))*(-6.66666666666667*y*sin(a)*sin(b)*sin(c)*sin(d) + 6.66666666666667*sin(a)*sin(b)*sin(c)*sin(e)*cos(d) + 6.66666666666667*sin(a)*sin(b)*sin(d)*cos(c) - 6.66666666666667*sin(a)*sin(b)*cos(c)*cos(d)) + (l*cos(c) - y*sin(c)*cos(d) - z*sin(c)*sin(d)*sin(e) + sin(d)*cos(c) + cos(c)*cos(d))*(1.0*l*sin(a)*sin(b)*sin(c) + 1.0*y*sin(a)*sin(b)*cos(c)*cos(d) + 1.0*sin(a)*sin(b)*sin(c)*sin(d) + 1.0*sin(a)*sin(b)*sin(c)*cos(d) + 1.0*sin(a)*sin(b)*sin(d)*sin(e)*cos(c))]
- ,[(z*sin(a)*sin(e)*cos(b) + sin(a)*sin(b)*sin(c)*sin(d)*cos(e))*(-3.7037037037037*z*sin(e)*cos(a)*cos(b) - 3.7037037037037*sin(b)*sin(c)*sin(d)*cos(a)*cos(e)) + (-y*sin(a)*sin(b)*sin(c)*sin(d) + sin(a)*sin(b)*sin(c)*sin(e)*cos(d) + sin(a)*sin(b)*sin(d)*cos(c) - sin(a)*sin(b)*cos(c)*cos(d))*(6.66666666666667*y*sin(b)*sin(c)*sin(d)*cos(a) - 6.66666666666667*sin(b)*sin(c)*sin(e)*cos(a)*cos(d) - 6.66666666666667*sin(b)*sin(d)*cos(a)*cos(c) + 6.66666666666667*sin(b)*cos(a)*cos(c)*cos(d)) + (l*sin(a)*sin(b)*sin(c) + y*sin(a)*sin(b)*cos(c)*cos(d) + sin(a)*sin(b)*sin(c)*sin(d) + sin(a)*sin(b)*sin(c)*cos(d) + sin(a)*sin(b)*sin(d)*sin(e)*cos(c))*(-1.0*l*sin(b)*sin(c)*cos(a) - 1.0*y*sin(b)*cos(a)*cos(c)*cos(d) - 1.0*sin(b)*sin(c)*sin(d)*cos(a) - 1.0*sin(b)*sin(c)*cos(a)*cos(d) - 1.0*sin(b)*sin(d)*sin(e)*cos(a)*cos(c)) + (-1.0*l*sin(a)*sin(b)*cos(c) + 1.0*w*sin(a)*cos(b) - 1.0*x*sin(a)*cos(b) + 1.0*y*sin(a)*sin(b)*sin(c)*cos(d) - 1.0*z*sin(a)*cos(b)*cos(e) + 1.0*sin(a)*sin(b)*sin(c)*sin(d)*sin(e) - 1.0*sin(a)*sin(b)*sin(d)*cos(c) - 1.0*sin(a)*sin(b)*cos(c)*cos(d) + 3.0*sin(b)*cos(a) + 5.0*cos(a)*cos(b))*(-l*sin(b)*cos(a)*cos(c) + w*cos(a)*cos(b) - x*cos(a)*cos(b) + y*sin(b)*sin(c)*cos(a)*cos(d) - z*cos(a)*cos(b)*cos(e) - 3*sin(a)*sin(b) - 5*sin(a)*cos(b) + sin(b)*sin(c)*sin(d)*sin(e)*cos(a) - sin(b)*sin(d)*cos(a)*cos(c) - sin(b)*cos(a)*cos(c)*cos(d)) + (-l*sin(a)*cos(b)*cos(c) - w*sin(a)*sin(b) + x*sin(a)*sin(b) + y*sin(a)*sin(c)*cos(b)*cos(d) + z*sin(a)*sin(b)*cos(e) + sin(a)*sin(c)*sin(d)*sin(e)*cos(b) - sin(a)*sin(d)*cos(b)*cos(c) - sin(a)*cos(b)*cos(c)*cos(d) - 5*sin(b)*cos(a) + 3*cos(a)*cos(b))*(1.0*l*cos(a)*cos(b)*cos(c) + 1.0*w*sin(b)*cos(a) - 1.0*x*sin(b)*cos(a) - 1.0*y*sin(c)*cos(a)*cos(b)*cos(d) - 1.0*z*sin(b)*cos(a)*cos(e) - 5.0*sin(a)*sin(b) + 3.0*sin(a)*cos(b) - 1.0*sin(c)*sin(d)*sin(e)*cos(a)*cos(b) + 1.0*sin(d)*cos(a)*cos(b)*cos(c) + 1.0*cos(a)*cos(b)*cos(c)*cos(d))
-  ,(-3.7037037037037*z*sin(e)*cos(a)*cos(b) - 3.7037037037037*sin(b)*sin(c)*sin(d)*cos(a)*cos(e))*(-z*sin(e)*cos(a)*cos(b) - sin(b)*sin(c)*sin(d)*cos(a)*cos(e)) + (y*sin(b)*sin(c)*sin(d)*cos(a) - sin(b)*sin(c)*sin(e)*cos(a)*cos(d) - sin(b)*sin(d)*cos(a)*cos(c) + sin(b)*cos(a)*cos(c)*cos(d))*(6.66666666666667*y*sin(b)*sin(c)*sin(d)*cos(a) - 6.66666666666667*sin(b)*sin(c)*sin(e)*cos(a)*cos(d) - 6.66666666666667*sin(b)*sin(d)*cos(a)*cos(c) + 6.66666666666667*sin(b)*cos(a)*cos(c)*cos(d)) + (-l*sin(b)*sin(c)*cos(a) - y*sin(b)*cos(a)*cos(c)*cos(d) - sin(b)*sin(c)*sin(d)*cos(a) - sin(b)*sin(c)*cos(a)*cos(d) - sin(b)*sin(d)*sin(e)*cos(a)*cos(c))*(-1.0*l*sin(b)*sin(c)*cos(a) - 1.0*y*sin(b)*cos(a)*cos(c)*cos(d) - 1.0*sin(b)*sin(c)*sin(d)*cos(a) - 1.0*sin(b)*sin(c)*cos(a)*cos(d) - 1.0*sin(b)*sin(d)*sin(e)*cos(a)*cos(c)) + (-l*sin(a)*sin(b)*cos(c) + w*sin(a)*cos(b) - x*sin(a)*cos(b) + y*sin(a)*sin(b)*sin(c)*cos(d) - z*sin(a)*cos(b)*cos(e) + sin(a)*sin(b)*sin(c)*sin(d)*sin(e) - sin(a)*sin(b)*sin(d)*cos(c) - sin(a)*sin(b)*cos(c)*cos(d) + 3*sin(b)*cos(a) + 5*cos(a)*cos(b))*(-1.0*l*sin(a)*sin(b)*cos(c) + 1.0*w*sin(a)*cos(b) - 1.0*x*sin(a)*cos(b) + 1.0*y*sin(a)*sin(b)*sin(c)*cos(d) - 1.0*z*sin(a)*cos(b)*cos(e) + 1.0*sin(a)*sin(b)*sin(c)*sin(d)*sin(e) - 1.0*sin(a)*sin(b)*sin(d)*cos(c) - 1.0*sin(a)*sin(b)*cos(c)*cos(d) + 3.0*sin(b)*cos(a) + 5.0*cos(a)*cos(b)) + (l*cos(a)*cos(b)*cos(c) + w*sin(b)*cos(a) - x*sin(b)*cos(a) - y*sin(c)*cos(a)*cos(b)*cos(d) - z*sin(b)*cos(a)*cos(e) - 5*sin(a)*sin(b) + 3*sin(a)*cos(b) - sin(c)*sin(d)*sin(e)*cos(a)*cos(b) + sin(d)*cos(a)*cos(b)*cos(c) + cos(a)*cos(b)*cos(c)*cos(d))*(1.0*l*cos(a)*cos(b)*cos(c) + 1.0*w*sin(b)*cos(a) - 1.0*x*sin(b)*cos(a) - 1.0*y*sin(c)*cos(a)*cos(b)*cos(d) - 1.0*z*sin(b)*cos(a)*cos(e) - 5.0*sin(a)*sin(b) + 3.0*sin(a)*cos(b) - 1.0*sin(c)*sin(d)*sin(e)*cos(a)*cos(b) + 1.0*sin(d)*cos(a)*cos(b)*cos(c) + 1.0*cos(a)*cos(b)*cos(c)*cos(d))
-  ,z*(-3.7037037037037*z*sin(e)*cos(a)*cos(b) - 3.7037037037037*sin(b)*sin(c)*sin(d)*cos(a)*cos(e))*sin(d)*cos(c)*cos(e) + (-y*sin(d)*cos(c) + z*sin(e)*cos(c)*cos(d) - sin(c)*sin(d) + sin(c)*cos(d))*(6.66666666666667*y*sin(b)*sin(c)*sin(d)*cos(a) - 6.66666666666667*sin(b)*sin(c)*sin(e)*cos(a)*cos(d) - 6.66666666666667*sin(b)*sin(d)*cos(a)*cos(c) + 6.66666666666667*sin(b)*cos(a)*cos(c)*cos(d)) + (l*cos(c) - y*sin(c)*cos(d) - z*sin(c)*sin(d)*sin(e) + sin(d)*cos(c) + cos(c)*cos(d))*(-1.0*l*sin(b)*sin(c)*cos(a) - 1.0*y*sin(b)*cos(a)*cos(c)*cos(d) - 1.0*sin(b)*sin(c)*sin(d)*cos(a) - 1.0*sin(b)*sin(c)*cos(a)*cos(d) - 1.0*sin(b)*sin(d)*sin(e)*cos(a)*cos(c))]
- ,[3.7037037037037*z*(z*sin(a)*sin(e)*cos(b) + sin(a)*sin(b)*sin(c)*sin(d)*cos(e))*sin(d)*cos(c)*cos(e) + (-6.66666666666667*y*sin(d)*cos(c) + 6.66666666666667*z*sin(e)*cos(c)*cos(d) - 6.66666666666667*sin(c)*sin(d) + 6.66666666666667*sin(c)*cos(d))*(-y*sin(a)*sin(b)*sin(c)*sin(d) + sin(a)*sin(b)*sin(c)*sin(e)*cos(d) + sin(a)*sin(b)*sin(d)*cos(c) - sin(a)*sin(b)*cos(c)*cos(d)) + (1.0*l*cos(c) - 1.0*y*sin(c)*cos(d) - 1.0*z*sin(c)*sin(d)*sin(e) + 1.0*sin(d)*cos(c) + 1.0*cos(c)*cos(d))*(l*sin(a)*sin(b)*sin(c) + y*sin(a)*sin(b)*cos(c)*cos(d) + sin(a)*sin(b)*sin(c)*sin(d) + sin(a)*sin(b)*sin(c)*cos(d) + sin(a)*sin(b)*sin(d)*sin(e)*cos(c))
-  ,3.7037037037037*z*(-z*sin(e)*cos(a)*cos(b) - sin(b)*sin(c)*sin(d)*cos(a)*cos(e))*sin(d)*cos(c)*cos(e) + (-6.66666666666667*y*sin(d)*cos(c) + 6.66666666666667*z*sin(e)*cos(c)*cos(d) - 6.66666666666667*sin(c)*sin(d) + 6.66666666666667*sin(c)*cos(d))*(y*sin(b)*sin(c)*sin(d)*cos(a) - sin(b)*sin(c)*sin(e)*cos(a)*cos(d) - sin(b)*sin(d)*cos(a)*cos(c) + sin(b)*cos(a)*cos(c)*cos(d)) + (1.0*l*cos(c) - 1.0*y*sin(c)*cos(d) - 1.0*z*sin(c)*sin(d)*sin(e) + 1.0*sin(d)*cos(c) + 1.0*cos(c)*cos(d))*(-l*sin(b)*sin(c)*cos(a) - y*sin(b)*cos(a)*cos(c)*cos(d) - sin(b)*sin(c)*sin(d)*cos(a) - sin(b)*sin(c)*cos(a)*cos(d) - sin(b)*sin(d)*sin(e)*cos(a)*cos(c))
-  ,3.7037037037037*z**2*sin(d)**2*cos(c)**2*cos(e)**2 + (-6.66666666666667*y*sin(d)*cos(c) + 6.66666666666667*z*sin(e)*cos(c)*cos(d) - 6.66666666666667*sin(c)*sin(d) + 6.66666666666667*sin(c)*cos(d))*(-y*sin(d)*cos(c) + z*sin(e)*cos(c)*cos(d) - sin(c)*sin(d) + sin(c)*cos(d)) + (l*cos(c) - y*sin(c)*cos(d) - z*sin(c)*sin(d)*sin(e) + sin(d)*cos(c) + cos(c)*cos(d))*(1.0*l*cos(c) - 1.0*y*sin(c)*cos(d) - 1.0*z*sin(c)*sin(d)*sin(e) + 1.0*sin(d)*cos(c) + 1.0*cos(c)*cos(d))]])
+Compliance = Matrix([
+  [3.7037037037037*z**2*((sin(a)*cos(b) + sin(b)*cos(a))*sin(e) + (-(sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d) + (sin(a)*sin(b) - cos(a)*cos(b))*cos(c)*cos(d))*cos(e))**2 + (y*((-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d) + (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d)) + z*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(d)*cos(c))*sin(e))**2 + (y*((-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d) + (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d)) + z*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*cos(d))*sin(e))*(6.66666666666667*y*((-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d) + (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d)) + 6.66666666666667*z*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*cos(d))*sin(e)) + 2*(-l*sin(a)*cos(b) - l*sin(b)*cos(a) + w*(sin(a)*sin(b) - cos(a)*cos(b)) + x*(sin(a)*sin(b) - cos(a)*cos(b)) + y*((-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*cos(d) + (-sin(a)*cos(b) - sin(b)*cos(a))*sin(d)*cos(c)) + z*((sin(a)*sin(b) - cos(a)*cos(b))*cos(e) + (-(sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d))*sin(e)))**2, 3.7037037037037*z**2*((sin(a)*sin(b) - cos(a)*cos(b))*sin(e) + ((sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d) - (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d))*cos(e))*((sin(a)*cos(b) + sin(b)*cos(a))*sin(e) + (-(sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d) + (sin(a)*sin(b) - cos(a)*cos(b))*cos(c)*cos(d))*cos(e)) + (y*((-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d) + (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d)) + z*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(d)*cos(c))*sin(e))*(y*((-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d)) + z*((sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*cos(d) + (sin(a)*cos(b) + sin(b)*cos(a))*sin(d)*cos(c))*sin(e)) + (6.66666666666667*y*((-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d) + (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d)) + 6.66666666666667*z*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*cos(d))*sin(e))*(y*((-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d)) + z*((sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*cos(d) + (sin(a)*cos(b) + sin(b)*cos(a))*sin(d)*cos(c))*sin(e)) + 2*(-l*sin(a)*sin(b) + l*cos(a)*cos(b) + w*(-sin(a)*cos(b) - sin(b)*cos(a)) + x*(-sin(a)*cos(b) - sin(b)*cos(a)) + y*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c)) + z*((-sin(a)*cos(b) - sin(b)*cos(a))*cos(e) + (-(sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d) + (sin(a)*sin(b) - cos(a)*cos(b))*cos(c)*cos(d))*sin(e)))*(-l*sin(a)*cos(b) - l*sin(b)*cos(a) + w*(sin(a)*sin(b) - cos(a)*cos(b)) + x*(sin(a)*sin(b) - cos(a)*cos(b)) + y*((-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*cos(d) + (-sin(a)*cos(b) - sin(b)*cos(a))*sin(d)*cos(c)) + z*((sin(a)*sin(b) - cos(a)*cos(b))*cos(e) + (-(sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d))*sin(e))), -3.7037037037037*z**2*((sin(a)*cos(b) + sin(b)*cos(a))*sin(e) + (-(sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d) + (sin(a)*sin(b) - cos(a)*cos(b))*cos(c)*cos(d))*cos(e))*(-sin(c)*cos(d) - sin(d)*cos(c))*cos(e) + (y*(-sin(c)*cos(d) - sin(d)*cos(c)) - z*(sin(c)*sin(d) - cos(c)*cos(d))*sin(e))*(y*((-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d) + (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d)) + z*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(d)*cos(c))*sin(e)) + (y*(-sin(c)*cos(d) - sin(d)*cos(c)) - z*(sin(c)*sin(d) - cos(c)*cos(d))*sin(e))*(6.66666666666667*y*((-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d) + (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d)) + 6.66666666666667*z*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*cos(d))*sin(e))]
+  ,[3.7037037037037*z**2*((sin(a)*sin(b) - cos(a)*cos(b))*sin(e) + ((sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d) - (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d))*cos(e))*((sin(a)*cos(b) + sin(b)*cos(a))*sin(e) + (-(sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d) + (sin(a)*sin(b) - cos(a)*cos(b))*cos(c)*cos(d))*cos(e)) + (y*((-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d) + (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d)) + z*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(d)*cos(c))*sin(e))*(y*((-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d)) + z*((sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*cos(d) + (sin(a)*cos(b) + sin(b)*cos(a))*sin(d)*cos(c))*sin(e)) + (y*((-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d) + (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d)) + z*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*cos(d))*sin(e))*(6.66666666666667*y*((-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d)) + 6.66666666666667*z*((sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*cos(d) + (sin(a)*cos(b) + sin(b)*cos(a))*sin(d)*cos(c))*sin(e)) + 2*(-l*sin(a)*sin(b) + l*cos(a)*cos(b) + w*(-sin(a)*cos(b) - sin(b)*cos(a)) + x*(-sin(a)*cos(b) - sin(b)*cos(a)) + y*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c)) + z*((-sin(a)*cos(b) - sin(b)*cos(a))*cos(e) + (-(sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d) + (sin(a)*sin(b) - cos(a)*cos(b))*cos(c)*cos(d))*sin(e)))*(-l*sin(a)*cos(b) - l*sin(b)*cos(a) + w*(sin(a)*sin(b) - cos(a)*cos(b)) + x*(sin(a)*sin(b) - cos(a)*cos(b)) + y*((-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*cos(d) + (-sin(a)*cos(b) - sin(b)*cos(a))*sin(d)*cos(c)) + z*((sin(a)*sin(b) - cos(a)*cos(b))*cos(e) + (-(sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d))*sin(e))), 3.7037037037037*z**2*((sin(a)*sin(b) - cos(a)*cos(b))*sin(e) + ((sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d) - (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d))*cos(e))**2 + (y*((-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d)) + z*((sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*cos(d) + (sin(a)*cos(b) + sin(b)*cos(a))*sin(d)*cos(c))*sin(e))**2 + (y*((-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d)) + z*((sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*cos(d) + (sin(a)*cos(b) + sin(b)*cos(a))*sin(d)*cos(c))*sin(e))*(6.66666666666667*y*((-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d)) + 6.66666666666667*z*((sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*cos(d) + (sin(a)*cos(b) + sin(b)*cos(a))*sin(d)*cos(c))*sin(e)) + 2*(-l*sin(a)*sin(b) + l*cos(a)*cos(b) + w*(-sin(a)*cos(b) - sin(b)*cos(a)) + x*(-sin(a)*cos(b) - sin(b)*cos(a)) + y*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) + (-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c)) + z*((-sin(a)*cos(b) - sin(b)*cos(a))*cos(e) + (-(sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d) + (sin(a)*sin(b) - cos(a)*cos(b))*cos(c)*cos(d))*sin(e)))**2, -3.7037037037037*z**2*((sin(a)*sin(b) - cos(a)*cos(b))*sin(e) + ((sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d) - (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d))*cos(e))*(-sin(c)*cos(d) - sin(d)*cos(c))*cos(e) + (y*(-sin(c)*cos(d) - sin(d)*cos(c)) - z*(sin(c)*sin(d) - cos(c)*cos(d))*sin(e))*(y*((-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d)) + z*((sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*cos(d) + (sin(a)*cos(b) + sin(b)*cos(a))*sin(d)*cos(c))*sin(e)) + (y*(-sin(c)*cos(d) - sin(d)*cos(c)) - z*(sin(c)*sin(d) - cos(c)*cos(d))*sin(e))*(6.66666666666667*y*((-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d)) + 6.66666666666667*z*((sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*cos(d) + (sin(a)*cos(b) + sin(b)*cos(a))*sin(d)*cos(c))*sin(e))]
+  ,[-3.7037037037037*z**2*((sin(a)*cos(b) + sin(b)*cos(a))*sin(e) + (-(sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d) + (sin(a)*sin(b) - cos(a)*cos(b))*cos(c)*cos(d))*cos(e))*(-sin(c)*cos(d) - sin(d)*cos(c))*cos(e) + (y*(-sin(c)*cos(d) - sin(d)*cos(c)) - z*(sin(c)*sin(d) - cos(c)*cos(d))*sin(e))*(y*((-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d) + (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d)) + z*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(c)*cos(d) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(d)*cos(c))*sin(e)) + (6.66666666666667*y*(-sin(c)*cos(d) - sin(d)*cos(c)) - 6.66666666666667*z*(sin(c)*sin(d) - cos(c)*cos(d))*sin(e))*(y*((-sin(a)*sin(b) + cos(a)*cos(b))*cos(c)*cos(d) + (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*sin(d)) + z*((-sin(a)*sin(b) + cos(a)*cos(b))*sin(d)*cos(c) - (sin(a)*sin(b) - cos(a)*cos(b))*sin(c)*cos(d))*sin(e)), -3.7037037037037*z**2*((sin(a)*sin(b) - cos(a)*cos(b))*sin(e) + ((sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*sin(d) - (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d))*cos(e))*(-sin(c)*cos(d) - sin(d)*cos(c))*cos(e) + (y*(-sin(c)*cos(d) - sin(d)*cos(c)) - z*(sin(c)*sin(d) - cos(c)*cos(d))*sin(e))*(y*((-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d)) + z*((sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*cos(d) + (sin(a)*cos(b) + sin(b)*cos(a))*sin(d)*cos(c))*sin(e)) + (6.66666666666667*y*(-sin(c)*cos(d) - sin(d)*cos(c)) - 6.66666666666667*z*(sin(c)*sin(d) - cos(c)*cos(d))*sin(e))*(y*((-sin(a)*cos(b) - sin(b)*cos(a))*sin(c)*sin(d) + (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)*cos(d)) + z*((sin(a)*cos(b) + sin(b)*cos(a))*sin(c)*cos(d) + (sin(a)*cos(b) + sin(b)*cos(a))*sin(d)*cos(c))*sin(e)), 3.7037037037037*z**2*(-sin(c)*cos(d) - sin(d)*cos(c))**2*cos(e)**2 + (y*(-sin(c)*cos(d) - sin(d)*cos(c)) - z*(sin(c)*sin(d) - cos(c)*cos(d))*sin(e))**2 + (y*(-sin(c)*cos(d) - sin(d)*cos(c)) - z*(sin(c)*sin(d) - cos(c)*cos(d))*sin(e))*(6.66666666666667*y*(-sin(c)*cos(d) - sin(d)*cos(c)) - 6.66666666666667*z*(sin(c)*sin(d) - cos(c)*cos(d))*sin(e))]])
 
 # with squared compliance we can obtain eigen values
 squared_compliance = Compliance * Compliance

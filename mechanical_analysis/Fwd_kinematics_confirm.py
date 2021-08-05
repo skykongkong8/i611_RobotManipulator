@@ -1,10 +1,13 @@
 from sympy import sin, cos, abc, symbols, pi, sqrt
-from i611_MCS import *
-from i611_extend import *
+# from i611_MCS import *
+# from i611_extend import *
 
 ############################
 #Section 1 : Our Prediction#
 ############################
+
+import numpy as np
+
 
 a = symbols('a')
 b = symbols('b')
@@ -40,36 +43,83 @@ d = pi/6
 e = pi/6
 f = pi/6
 
-Homogeneous_Transformation_Matrix=[
-    [cos(a)*cos(b) + -sin(a)*sin(b)*cos(c)*cos(d) + cos(a)*cos(b) + -sin(a)*sin(b)*sin(c)*sin(d)*cos(e) + cos(a)*sin(b) + -sin(a)*-cos(b)*(-1)*sin(e)*cos(f) + cos(a)*cos(b) + -sin(a)*sin(b)*cos(c)*sin(d) + cos(a)*cos(b) + -sin(a)*sin(b)*sin(c)*-cos(d)*(-1)*sin(f), cos(a)*cos(b) + -sin(a)*sin(b)*cos(c)*cos(d) + cos(a)*cos(b) + -sin(a)*sin(b)*sin(c)*sin(d)*-sin(e) + cos(a)*sin(b) + -sin(a)*-cos(b)*(-1)*cos(e), (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(cos(c))*(cos(d)) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(sin(c))*(sin(d))*(cos(e)) + (cos(a))*(sin(b)) + (-sin(a))*(-cos(b))*(-1)*(sin(e))*(sin(f)) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(cos(c))*(sin(d)) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(sin(c))*(-cos(d))*(-1)*(-cos(f)), (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(cos(c))*(cos(d)) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(sin(c))*(sin(d))*(-sin(e)) + (cos(a))*(sin(b)) + (-sin(a))*(-cos(b))*(-1)*(cos(e))*(z) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(cos(c))*(sin(d)) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(sin(c))*(-cos(d))*(y) + (cos(a))*(sin(b)) + (-sin(a))*(-cos(b))*(-1)*(x) + (cos(a))*(cos(b)) + (-sin(a))*(sin(b))*(l)*(cos(c)) + (cos(a))*(sin(b)) + (-sin(a))*(-cos(b))*(w)],
-    [(sin(a))*(cos(b)) + (cos(a))*(sin(b))*(cos(c))*(cos(d)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(sin(c))*(sin(d))*(cos(e)) + (sin(a))*(sin(b)) + (cos(a))*(-cos(b))*(-1)*(sin(e))*(cos(f)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(cos(c))*(sin(d)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(sin(c))*(-cos(d))*(-1)*(sin(f)), (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(cos(c))*(cos(d)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(sin(c))*(sin(d))*(-sin(e)) + (sin(a))*(sin(b)) + (cos(a))*(-cos(b))*(-1)*(cos(e)), (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(cos(c))*(cos(d)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(sin(c))*(sin(d))*(cos(e)) + (sin(a))*(sin(b)) + (cos(a))*(-cos(b))*(-1)*(sin(e))*(sin(f)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(cos(c))*(sin(d)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(sin(c))*(-cos(d))*(-1)*(-cos(f)), (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(cos(c))*(cos(d)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(sin(c))*(sin(d))*(-sin(e)) + (sin(a))*(sin(b)) + (cos(a))*(-cos(b))*(-1)*(cos(e))*(z) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(cos(c))*(sin(d)) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(sin(c))*(-cos(d))*(y) + (sin(a))*(sin(b)) + (cos(a))*(-cos(b))*(-1)*(x) + (sin(a))*(cos(b)) + (cos(a))*(sin(b))*(l)*(cos(c)) + (sin(a))*(sin(b)) + (cos(a))*(-cos(b))*(w)],
-    [(sin(c))*(cos(d)) + (-cos(c))*(sin(d))*(cos(e))*(cos(f)) + (sin(c))*(sin(d)) + (-cos(c))*(-cos(d))*(-1)*(sin(f)), (sin(c))*(cos(d)) + (-cos(c))*(sin(d))*(-sin(e)), (sin(c))*(cos(d)) + (-cos(c))*(sin(d))*(cos(e))*(sin(f)) + (sin(c))*(sin(d)) + (-cos(c))*(-cos(d))*(-1)*(-cos(f)), (sin(c))*(cos(d)) + (-cos(c))*(sin(d))*(-sin(e))*(z) + (sin(c))*(sin(d)) + (-cos(c))*(-cos(d))*(y) + (l)*(sin(c)) + (v) + (u)],
-    [0,0,0,1]]
+"""Obtain Denavit-Hartenberg Kinematic Parameters"""
+DH_params = [
+    [0,0,a,u],
+    [l,-pi/2,b,v],
+    [0,0,c,w],
+    [0, pi/2,d,x],
+    [0,-pi/2,e,y],
+    [0,pi/2,f,z]
+]
 
-# print(Homogeneous_Transformation_Matrix)
-result = [
-    [sqrt(3)/8 + 21/8, sqrt(3)/4 + 31/32, 3*sqrt(3)/32 + 93/32, -1209*sqrt(3)/16 - 665/32], 
-    [5/8 + 11*sqrt(3)/8, 1/4 + 33*sqrt(3)/32, 23/32 + 35*sqrt(3)/32, 825*sqrt(3)/32 + 3675/16], 
-    [-1/8 + sqrt(3)/16, 3*sqrt(3)/8, 1/16 + 5*sqrt(3)/8, 67*sqrt(3)/8 + 2201/4], 
-    [0, 0, 0, 1]]
-
-# Orientation = [
-#     [0,0,0],
-#     [0,0,0],
-#     [0,0,0]
+"""Formulate homogeneous Transformation matrix for each link"""
+# dh = DH_params
+# i = 0
+# homogeneous_matrix = [
+#     [cos(dh[2]), -sin(dh[2])*cos(dh[1]), sin(dh[2])*sin(dh[1]), dh[0]*cos(dh[2])],
+#     [sin(dh[2]), cos(dh[2])*cos(dh[1]), -cos(dh[2])*sin(dh[1]), dh[0]*sin(dh[2])],
+#     [0, sin(dh[1]), cos(dh[1]), dh[3]],
+#     [0,0,0,1]
 # ]
-# for i in range(len(result)-1):
-#     for j in range(len(result[0])-1):
-#         Orientation[j][i] = result[j][i]
-Orientation = [
-    [sqrt(3)/8 + 2.625, sqrt(3)/4 + 0.96875, 3*sqrt(3)/32 + 2.90625], 
-    [0.625 + 11*sqrt(3)/8, 0.25 + 33*sqrt(3)/32, 0.71875 + 35*sqrt(3)/32], 
-    [-0.125 + sqrt(3)/16, 3*sqrt(3)/8, 0.0625 + 5*sqrt(3)/8]]
 
-# Position = [0,0,0]
-# for i in range(len(result)-1):
-#     Position[i] = result[i][-1]
-Position = [-1209*sqrt(3)/16 - 20.78125, 825*sqrt(3)/32 + 229.6875, 67*sqrt(3)/8 + 550.25]
+homogeneous_matricies = []
+for i in range(6):
+    dh = DH_params[i]
+    homogeneous_matricies.append([[cos(dh[2]), -sin(dh[2])*cos(dh[1]), sin(dh[2])*sin(dh[1]), dh[0]*cos(dh[2])],
+    [sin(dh[2]), cos(dh[2])*cos(dh[1]), -cos(dh[2])*sin(dh[1]), dh[0]*sin(dh[2])],
+    [0, sin(dh[1]), cos(dh[1]), dh[3]],
+    [0,0,0,1]])
+
+# print(homogeneous_matricies)
+
+M1 = np.array(homogeneous_matricies[0])
+M2 = np.array(homogeneous_matricies[1])
+M3 = np.array(homogeneous_matricies[2])
+M4 = np.array(homogeneous_matricies[3])
+M5 = np.array(homogeneous_matricies[4])
+M6 = np.array(homogeneous_matricies[5])
+
+M1M2 = np.dot(M1,M2)
+M1M2M3 = np.dot(M1M2,M3)
+M1M2M3M4 = np.dot(M1M2M3, M4)
+M1M2M3M4M5 = np.dot(M1M2M3M4,M5)
+M1M2M3M4M5M6 = np.dot(M1M2M3M4M5,M6)
+
+result = M1M2M3M4M5M6
+# print(result)
+
+Orientation = [
+    [0,0,0],
+    [0,0,0],
+    [0,0,0]
+]
+for i in range(len(result)-1):
+    for j in range(len(result[0])-1):
+        Orientation[j][i] = result[j][i]
+print(Orientation)
+# Orientation = [[-sqrt(3)/8 - 3/16, -7/8, 3/8 - sqrt(3)/16]
+#  , [-3/8 + 5*sqrt(3)/16, sqrt(3)/8, 5/16 + 3*sqrt(3)/8]
+# , [-3*sqrt(3)/8 - 1/4, sqrt(3)/4, -3/8 + sqrt(3)/4]]
+
+Position = [0,0,0]
+for i in range(len(result)-1):
+    Position[i] = result[i][-1]
+# Position = [-1209*sqrt(3)/16 - 20.78125, 825*sqrt(3)/32 + 229.6875, 67*sqrt(3)/8 + 550.25]
+# if __name__ == '__main__':
+#     print(f'x : {Position[0]}\n', f'y : {Position[1]}\n', f'z : {Position[2]}\n')
+
+#x = -169.3140183434757
+#y = 629.3228202874282
+#z = 358.14582562299427
+
+
+
+
+
+
+
+
 
 
 
@@ -77,11 +127,11 @@ Position = [-1209*sqrt(3)/16 - 20.78125, 825*sqrt(3)/32 + 229.6875, 67*sqrt(3)/8
 #Section 2 : i611 library#
 ##########################
 
-rb = i611Robot()
-j1 = Joint(30,30,30,30,30,30)
-p1 = rb.Joint2Position(j1)
+# rb = i611Robot()
+# j1 = Joint(30,30,30,30,30,30)
+# p1 = rb.Joint2Position(j1)
 
-print(p1)
+# print(p1)
 
 
 """

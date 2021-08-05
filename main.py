@@ -50,6 +50,7 @@ def move_with_keyboard(cur_pos, rb):
     key_teleop = RobotArmTeleoperation_Keyboard(cur_pos, rb)
     print(key_teleop.msg)
     while True:
+        print("Waiting for keyboard input...")
         try:
             key = key_teleop.ready_for_keyboard_input()
             pos_candidate = key_teleop.make_new_position(key)
@@ -65,8 +66,10 @@ def move_with_keyboard(cur_pos, rb):
             key_teleop.cur_pos = new_pos
         except KeyboardInterrupt:
             print("keyboard interrupt abort!")
+            break
         except:
             print(key_teleop.e)
+            break
 
 def move_with_command(cur_pos, rb):
     cmd_teleop = RobotArmTeleoperation_Command(cur_pos, rb, sys.argv[2])

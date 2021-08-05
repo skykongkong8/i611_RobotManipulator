@@ -18,8 +18,5 @@ a = rx/pi * 180
 b = ry/pi *180
 c = rz/pi * 180
 
-euler_matrix = [
-    [cos]
-]
 
 print(x,y,z)

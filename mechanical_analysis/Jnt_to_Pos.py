@@ -6,7 +6,17 @@ from i611_io import *
 
 
 rb = i611Robot()
-j1 = Joint(30,30,30,30,30,30)
-p1 = rb.Joint2Position(j1)
+rb.home()
 
-print(p1)
+home_pos = rb.getpos()
+"""
+Quick remind:
+
+rb.getpos()
+teachdata.get_pos()
+cell.get_position()
+"""
+# j1 = Joint(30,30,30,30,30,30)
+# p1 = rb.Joint2Position(j1)
+
+print(home_pos)
