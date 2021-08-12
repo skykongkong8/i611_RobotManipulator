@@ -56,3 +56,19 @@ def matrix_printer(matrix):
             line+=matrix[i][j]
             line+='\t'
         print(line)
+
+m1 = [
+    ['(c_1)', '(-s_1)', '0','0'],
+    ['(s_1)','(c_1)','0','0'],
+    ['0','0','1', 'u'],
+    ['0','0','0','1']
+]
+
+m2 = [
+    ['(c_2)', '0', '(-s_2)', '(l)(c_2)'],
+    ['(s_2)', '0', '(c_2)', '(l)(s_2)'],
+    ['0', '-1', '0', 'v'],
+    ['0', '0', '0', '1']
+]
+
+matrix_printer(matrix_prettier(matrix_with_variables_calculator(m1,m2,result_4)))

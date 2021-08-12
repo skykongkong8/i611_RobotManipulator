@@ -19,13 +19,22 @@ z = symbols('z')
 
 l = symbols('l')
 
+# DH_params = [
+#     [0,0,a,u],
+#     [l,pi/2,b,v],
+#     [0,0,c,w], 
+#     [0, pi/2,d,x],
+#     [0,-pi/2,e,y],
+#     [0,pi/2,f,z] 
+# ]
+
 DH_params = [
-    [0,0,a,u],
-    [l,-pi/2,b,v],
-    [0,0,c,w],
-    [0, pi/2,d,x],
-    [0,-pi/2,e,y],
-    [0,pi/2,f,z]
+    [0,-pi/2,a-pi/2,u],
+    [l,0,b-pi/2,v],
+    [0,+pi/2,c,w], 
+    [0, -pi/2,d,x],
+    [0,pi/2,e,y],
+    [0,0,f,z] 
 ]
 
 homogeneous_matricies = []
