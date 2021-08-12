@@ -16,7 +16,6 @@ class TeleoperationManager:
         rb.open()
         rb.home()
         IOinit( rb )
-
         return rb
 
 
@@ -46,7 +45,6 @@ class TeleoperationManager:
         rb.move( j1 )
         rb.home()
 
-        # rb.close()
 
     def run_with_keyboard_RPY(self, cur_pos, rb):
         key_teleop = RobotArmTeleoperation_Keyboard(cur_pos, rb)
@@ -107,6 +105,7 @@ class TeleoperationManager:
                 cmd_teleop.cur_pos = new_pos
             except:
                 print(cmd_teleop.e)
+                break
 
     def run_sample_moves(self):
         samplemove_teleop = RobotArmTeleoperation_Sample()
@@ -118,6 +117,7 @@ class TeleoperationManager:
                 samplemove_teleop.action()
             except:
                 print("Invalid Key Error!")
+                break
 
 
     def get_initialized_pos(self,rb):

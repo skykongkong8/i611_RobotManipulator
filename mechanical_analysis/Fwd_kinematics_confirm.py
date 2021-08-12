@@ -53,7 +53,7 @@ DH_params = [
     [0, pi/2,d,x],
     [0,-pi/2,e,y],
     [0,pi/2,f,z]
-]
+    ]
 
 def single_angle_i611_DH_params(angle):
     angle += -pi/2
@@ -111,6 +111,7 @@ def Homogeneous_Transformation_Matrix(DH_params):
     return result
 
 
+"""
 # Orientation = [
 #     [0,0,0],
 #     [0,0,0],
@@ -120,15 +121,8 @@ def Homogeneous_Transformation_Matrix(DH_params):
 #     for j in range(len(result[0])-1):
 #         Orientation[j][i] = result[j][i]
 # print(Orientation)
+"""
 
-# Orientation = [[-sqrt(3)/8 - 3/16, -7/8, 3/8 - sqrt(3)/16]
-#  , [-3/8 + 5*sqrt(3)/16, sqrt(3)/8, 5/16 + 3*sqrt(3)/8]
-# , [-3*sqrt(3)/8 - 1/4, sqrt(3)/4, -3/8 + sqrt(3)/4]]
-
-# Position = [0,0,0]
-# for i in range(len(result)-1):
-#     Position[i] = result[i][-1]
-# Position = [-1209*sqrt(3)/16 - 20.78125, 825*sqrt(3)/32 + 229.6875, 67*sqrt(3)/8 + 550.25]
 
 
 ##########################
@@ -151,8 +145,9 @@ true_value = [
         [100, 0, 870.307999],#0
         [332.5090, -352.8620,665.053],#30
         [491.596, -345.586, 459.361196089336701],#45
-        [594.331999, -229.05199999,239.494]#60
+        [594.331999, -229.05199999, 239.494]#60
 ]
+
 angle_list = [0, pi/6, pi/4, pi/3]
 
 position_list = [
@@ -160,7 +155,7 @@ position_list = [
         [0,0,0],
         [0,0,0],
         [0,0,0]
-]
+    ]
 
 from math import sqrt
 
