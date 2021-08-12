@@ -34,6 +34,11 @@ if __name__ == '__main__':
                 # >> python main.py -command -(direction) -(offset_amount)
                 if len(argument) >= 3:
                     manager.run_with_command(cur_pos, rb)
+                    
+            elif argument[1] == '-sample':
+                # >> python main.py -sample
+                manager.run_sample_moves(rb)
+
             else:
                 print('Invalid argument input! Set to Default : move_with_keyboard_JNT\n')
                 manager.run_with_keyboard_JNT(cur_pos, rb)

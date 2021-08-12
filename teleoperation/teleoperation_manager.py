@@ -1,14 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from .sample_moves import RobotArmTeleoperation_Sample
 from .robotarm_teleoperation_command import RobotArmTeleoperation_Command
 from .robotarm_teleoperation_keyboard_RPY import RobotArmTeleoperation_Keyboard
 from .robotarm_teleoperation_keyboard_JNT import RobotJointTeleoperation_Keyboard
 from i611_MCS import *
 from i611_extend import *
 from i611_io import *
+import sys
 
 class TeleoperationManager:
-    def initialization():
+    def initialization(self):
         rb = i611Robot()
         _BASE = Base()
         rb.open()
@@ -18,7 +20,7 @@ class TeleoperationManager:
         return rb
 
 
-    def run_with_code(rb):
+    def run_with_code(self, rb):
         """Set positions from data"""
         p1 = Position( 95, -280, 425, -120, 84, -28 )
         p2 = Position( 95, -280, 240, 154, 80, -114 )
@@ -46,7 +48,7 @@ class TeleoperationManager:
 
         # rb.close()
 
-    def run_with_keyboard_RPY(cur_pos, rb):
+    def run_with_keyboard_RPY(self, cur_pos, rb):
         key_teleop = RobotArmTeleoperation_Keyboard(cur_pos, rb)
         print(key_teleop.msg)
         while True:
@@ -71,7 +73,7 @@ class TeleoperationManager:
                 print(key_teleop.e)
                 break
 
-    def run_with_keyboard_JNT(cur_jnt, rb):
+    def run_with_keyboard_JNT(self, cur_jnt, rb):
         key_teleop = RobotJointTeleoperation_Keyboard(cur_jnt, rb)
         print(key_teleop.msg)
         while True:
@@ -89,7 +91,7 @@ class TeleoperationManager:
                 print(key_teleop.e)
                 break
 
-    def run_with_command(cur_pos, rb):
+    def run_with_command(self, cur_pos, rb):
         cmd_teleop = RobotArmTeleoperation_Command(cur_pos, rb, sys.argv[2])
         print(cmd_teleop.msg)
         while True:
@@ -106,7 +108,19 @@ class TeleoperationManager:
             except:
                 print(cmd_teleop.e)
 
-    def get_initialized_pos(rb):
+    def run_sample_moves(self):
+        samplemove_teleop = RobotArmTeleoperation_Sample()
+        print(samplemove_teleop.msg)
+        while True:
+            try:
+                key = samplemove_teleop.ready_for_keyboard_input()
+                samplemove_teleop.mode_selection(key)
+                samplemove_teleop.action()
+            except:
+                print("Invalid Key Error!")
+
+
+    def get_initialized_pos(self,rb):
         cur_pos = rb.getpos()
         
         if cur_pos != Position():
