@@ -106,6 +106,8 @@ K = Matrix([
     [0,0,0,0,0.27,0],
     [0,0,0,0,0,0.33]])
 ```
+**This is only for temporary situation because Servo Stiffness can only be obtained when the motor is back-drivable.   
+Generally, motors used in robot manipulators are not back-drivable due to its high gear ratio..**
 ```python
 Compliance = psuedo_inv_jacobian * (K**-1) * (psuedo_inv_jacobian.T)
 Compliance = Matrix([
