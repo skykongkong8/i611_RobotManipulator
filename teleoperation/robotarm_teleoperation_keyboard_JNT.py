@@ -30,6 +30,7 @@ class RobotJointTeleoperation_Keyboard():
 
         self.offset_amount = OFFSET_AMOUNT
         self.msg = """
+        \n
         Control Your i611 RobotArm in 3D World! (6 Directions)
         Suppose your endpoint is set to current plane, and control with WASDXHL keyboard input. 
         
