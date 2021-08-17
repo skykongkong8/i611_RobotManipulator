@@ -29,13 +29,18 @@ l = symbols('l')
 # ]
 
 DH_params = [
-    [0,-pi/2,a-pi/2,u],
-    [l,0,b-pi/2,v],
-    [0,+pi/2,c,w], 
+    [0,-pi/2,a+pi/2,u],
+    [l,0,b+pi/2,v],
+    [0,pi/2,c,w], 
     [0, -pi/2,d,x],
     [0,pi/2,e,y],
     [0,0,f,z] 
 ]
+
+hand_written_M1M2_position = [
+    -l*sin(a)*sin(b)+v*cos(a),
+    l*sin(b)*cos(a) + v*sin(a),
+    l*cos(b) + u]
 
 homogeneous_matricies = []
 for i in range(6):

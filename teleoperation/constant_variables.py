@@ -14,6 +14,7 @@ J3J4 = 1
 J5J6 = 2
 
 """Sample_move MODE"""
+# C : circle, S : square, L : line
 C = 0
 S = 1
 L = 2

@@ -37,6 +37,7 @@ if __name__ == '__main__':
                     
             elif argument[1] == '-sample':
                 # >> python main.py -sample
+                print('Enter sample moves mode!')
                 manager.run_sample_moves(rb)
 
             else:
