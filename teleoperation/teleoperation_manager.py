@@ -10,6 +10,9 @@ from i611_io import *
 import sys
 
 class TeleoperationManager:
+    def __init__(self):
+        pass
+
     def initialization(self):
         rb = i611Robot()
         _BASE = Base()
@@ -107,8 +110,8 @@ class TeleoperationManager:
                 print(cmd_teleop.e)
                 break
 
-    def run_sample_moves(self):
-        samplemove_teleop = RobotArmTeleoperation_Sample()
+    def run_sample_moves(self, rb):
+        samplemove_teleop = RobotArmTeleoperation_Sample(rb)
         print(samplemove_teleop.msg)
         while True:
             try:
@@ -128,11 +131,11 @@ class TeleoperationManager:
             cur_pos = rb.getpos()
         return cur_pos
 
-    def terminator(rb):
+    def terminator(self,rb):
         flag = rb.home()
         if not flag:
             print('Error : manipulator failed to come back home position!\n')
         rb.close()
 
-    def emergency_stop_everything(rb):
+    def emergency_stop_everything(self,rb):
         rb.abort()  

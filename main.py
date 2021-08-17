@@ -45,7 +45,7 @@ if __name__ == '__main__':
                 manager.run_with_keyboard_JNT(cur_pos, rb)
 
     except:
-        manager.emergency_stop_everything()
+        manager.emergency_stop_everything(rb)
 
     finally:
         print("Program Shutdown! Goodbye.\n")
