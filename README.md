@@ -2,8 +2,16 @@
 
 ## Introduction
 Since this robot system is based on the internal library from the manufacturer, the structure of the code is quite tricky to comprehend even with the distributed manual from [here](http://zero.globalzeus.com/scara/).    
-Thus I would like to make more user-friendly interface of using it, in order to let the user to feel more comfortable when encountered the robot interface for the first time.    
+Thus I would like to make more user-friendly interface for using it, in order to let the user feel more comfortable when encountered the robot interface for the first time.    
 This interface might not give you as sophisticated control as the original library, but *WAY* simpler, thus easier to adapt and proceed to real interface.   
+Moreover, this repository includes rough mechanical analysis that can reveal the internal library of the i611 robot manipulator.  
+It is not as acurate as the internal library, but it can definitely help you understand how this robot manipulator actually work and program under basic engineering understandings.
+
+### Contents
+* mechanical anaylsis
+* teleoperation
+* useful images
+* trouble shooting manual
 
 ## How to use (T.B.A.)
 1. RUN main.py
