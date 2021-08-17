@@ -44,7 +44,8 @@ if __name__ == '__main__':
                 print('Invalid argument input! Set to Default : move_with_keyboard_JNT\n')
                 manager.run_with_keyboard_JNT(cur_pos, rb)
 
-    except:
+    except Exception as e:
+        print('{0}'.format(e))
         manager.emergency_stop_everything(rb)
 
     finally:

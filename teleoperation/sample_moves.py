@@ -25,7 +25,7 @@ class RobotArmTeleoperation_Sample():
 
         quick guide
             c : circle
-            s : sqaure
+            s : show off
             l : line
         
         """
@@ -54,8 +54,41 @@ class RobotArmTeleoperation_Sample():
             print("Keyboard interrupt shutdown")
 
 
-    def draw_square(self):
-        pass
+    def show_off(self):
+        x_dist = 800
+        z_dist = 100
+
+        J1  = Joint(105, 45, 60, 0, 75, 45)
+        P1  = self.rb.Joint2Position(J1)
+        P1A = P1.offset(dz=z_dist)
+        P2  = P1.offset(dx=-x_dist)
+        P2A = P2.offset(dz=z_dist)
+        
+        m = MotionParam( jnt_speed=10, lin_speed=10, pose_speed=10, overlap = 30, ik_solver_option = 0x11111111 )
+        self.rb.motionparam( m )
+        
+        do_move = self.rb.move
+        do_move(J1)
+
+        for _ in range(2):
+            self.rb.sleep(1)
+            self.rb.use_mt(False)
+            do_move(P1)
+            do_move(P1A)
+            do_move(P2A)
+            do_move(P2)
+            do_move(P1)
+
+            # Reverse Move
+            self.rb.use_mt(True)
+            do_move(P1)
+            do_move(P1A)
+            do_move(P2A)
+
+            do_move(P2)
+            do_move(P1)
+
+
 
     def draw_line(self):
         pass
@@ -123,6 +156,6 @@ class RobotArmTeleoperation_Sample():
         if self.mode == C:
             self.draw_circle()
         elif self.mode == S:
-            self.draw_square()
+            self.show_off()
         elif self.mode == L:
             self.draw_line()
