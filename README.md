@@ -108,7 +108,7 @@ python main.py -command (your_command)
     -undo
 ```
 
-#### robotarm_teleoperation_samplemoves
+#### robotarm_teleoperation_samplemoves [THIS CODE WORKS!]
 * By Telnet connection (Tera Term recommended), after sending all the files via FFFTP, run:
 ```python
 python main.py -command (your_command)
