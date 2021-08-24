@@ -131,7 +131,7 @@ class RobotArmTeleoperation_Sample():
 
         """
         c : circle
-        s : sqaure
+        s : show-off
         l : line
 
         """
