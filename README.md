@@ -107,3 +107,18 @@ python main.py -command (your_command)
     -home
     -undo
 ```
+
+#### robotarm_teleoperation_samplemoves
+* By Telnet connection (Tera Term recommended), after sending all the files via FFFTP, run:
+```python
+python main.py -command (your_command)
+```
+
+* Command Examples:
+```command
+[circle move]
+    c : circle moves (kind of arc move though)
+[show off move]
+    s : show off moves (just for showing off)
+```
+**Sample moves are not applicable, but just for tests! They always will return after all their moves are finished.**
